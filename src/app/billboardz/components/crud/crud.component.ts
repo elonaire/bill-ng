@@ -133,6 +133,11 @@ export class CrudComponent implements OnInit {
 
   confirmDeleteSelected() {
     this.deleteProductsDialog = false;
+    this.selectedProducts.forEach((dataItem) => {
+      this.apiService.deleteSupplier(dataItem.id as string).subscribe((res) => {
+          this.changeEvent.emit((res.data as any).deleteSupplier);
+        });
+    });
     this.messageService.add({
       severity: 'success',
       summary: 'Successful',
