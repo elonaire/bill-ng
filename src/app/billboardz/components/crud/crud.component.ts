@@ -53,6 +53,8 @@ export class CrudComponent implements OnInit {
 
   rowsPerPageOptions = [5, 10, 20];
   addSupplierForm!: FormGroup;
+  updateSupplierForm!: FormGroup;
+  createOrUpdateForm!: FormGroup;
   selectedMutationType: MutationType = MutationType.CREATE;
 
   constructor(
@@ -67,6 +69,14 @@ export class CrudComponent implements OnInit {
     this.getData();
     this.columns = this.tableConfigs?.columns;
     this.addSupplierForm = this.fb.group({
+        name: ['', Validators.required],
+        address: ['', Validators.required],
+        email: ['', Validators.required],
+        vatNumber: ['', Validators.required],
+    });
+
+    this.updateSupplierForm = this.fb.group({
+        id: ['', Validators.required],
         name: ['', Validators.required],
         address: ['', Validators.required],
         email: ['', Validators.required],
@@ -99,6 +109,7 @@ export class CrudComponent implements OnInit {
     this.dataItem = {};
     this.submitted = false;
     this.productDialog = true;
+    this.createOrUpdateForm = this.addSupplierForm;
   }
 
   deleteSelectedProducts() {
@@ -107,9 +118,12 @@ export class CrudComponent implements OnInit {
 
   editProduct(dataItem: Supplier) {
     this.dataItem = { ...dataItem };
+    console.log('this.dataItem', this.dataItem);
+    
     this.productDialog = true;
-    this.addSupplierForm.patchValue(this.dataItem);
+    this.updateSupplierForm.patchValue(this.dataItem);
     this.selectedMutationType = MutationType.UPDATE;
+    this.createOrUpdateForm = this.updateSupplierForm;
   }
 
   deleteProduct(dataItem: Supplier) {
@@ -149,6 +163,8 @@ export class CrudComponent implements OnInit {
 
   saveProduct(opType: MutationType) {
     this.submitted = true;
+    console.log('opType', opType);
+    
 
     if (opType === MutationType.CREATE) {
         this.apiService.createSupplier(this.addSupplierForm.value).subscribe((res) => {
@@ -156,7 +172,7 @@ export class CrudComponent implements OnInit {
             this.addSupplierForm.reset();
           });
     } else {
-        this.apiService.updateSupplier(this.addSupplierForm.value).subscribe((res) => {
+        this.apiService.updateSupplier(this.updateSupplierForm.value).subscribe((res) => {
             this.changeEvent.emit((res.data as any).updateSupplier);
           });
     }

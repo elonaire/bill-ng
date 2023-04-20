@@ -82,7 +82,7 @@
 
         <p-dialog [(visible)]="productDialog" [style]="{ width: '450px' }" header="Create Supplier" [modal]="true" class="p-fluid">
             <ng-template pTemplate="content">
-                <div [formGroup]="addSupplierForm" class="card p-fluid">
+                <div [formGroup]="createOrUpdateForm" class="card p-fluid">
                     <div class="field">
                         <label htmlFor="Name">Name</label>
                         <input pInputText formControlName="name" type="text" />
