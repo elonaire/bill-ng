@@ -8,7 +8,6 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Product } from 'src/app/demo/api/product';
-import { ProductService } from 'src/app/demo/service/product.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import {
@@ -95,12 +94,12 @@ export class CrudComponent implements OnInit {
     }
   }
 
-  getData() {
+  getData(args?: any) {
     console.log('getData');
 
-    this.apiService.getSuppliers().subscribe(async (res) => {
+    (this as any)[this.tableConfigs.requestParams.service][this.tableConfigs.requestParams.serviceMethod](args).subscribe(async (res: any) => {
       await this.apollo.client.resetStore();
-      this.data = (res.data as any).getSuppliers;
+      this.data = (res.data as any)[this.tableConfigs.requestParams.graphQlQuery];
       console.log('this.data', this.data);
     });
   }
@@ -193,16 +192,6 @@ export class CrudComponent implements OnInit {
     }
 
     return index;
-  }
-
-  createId(): string {
-    let id = '';
-    const chars =
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    for (let i = 0; i < 5; i++) {
-      id += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return id;
   }
 
   onGlobalFilter(table: Table, event: Event) {

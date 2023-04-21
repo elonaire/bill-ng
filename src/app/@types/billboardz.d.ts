@@ -16,5 +16,17 @@ export interface TableColumn {
     tableName: string;
     columns: TableColumn[];
     forcedChangeVal?: any;
+    showSearch?: boolean;
+    showExport: boolean;
+    showImport: boolean;
+    showDelete: boolean;
+    wrapInCard?: boolean;
+    requestParams: RequestParams;
+  }
+
+  export interface RequestParams {
+    service: string;
+    serviceMethod: string;
+    graphQlQuery: string;
   }
   

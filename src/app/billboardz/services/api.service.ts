@@ -48,6 +48,24 @@ const DELETE_SUPPLIER = gql`
   }
 `;
 
+const GET_SUPPLIER = gql`
+  query getSupplier($id: String!) {
+    getSupplier(id: $id) {
+      name
+      email
+      address
+      vatNumber
+      contacts {
+        id
+        name
+        email
+        phone
+        role
+      }
+    }
+  }
+`;
+
 @Injectable({
   providedIn: 'root'
 })
@@ -87,6 +105,15 @@ export class ApiService {
   deleteSupplier(id: string) {
     return this.apollo.mutate({
       mutation: DELETE_SUPPLIER,
+      variables: {
+        id,
+      },
+    });
+  }
+
+  getSupplier(id: string) {
+    return this.apollo.query({
+      query: GET_SUPPLIER,
       variables: {
         id,
       },

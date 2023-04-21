@@ -9,8 +9,17 @@ import { GenericTableConfigs, TableColumn } from 'src/app/@types/billboardz';
 export class SuppliersComponent implements OnInit {
   constructor() {
     this.tableConfigs = {
-      tableName: 'Supplier',
+      tableName: 'Suppliers List',
       columns: this.supplierTableColumns,
+      showDelete: true,
+      showExport: true,
+      showImport: true,
+      wrapInCard: true,
+      requestParams: {
+        service: 'apiService',
+        serviceMethod: 'getSuppliers',
+        graphQlQuery: 'getSuppliers',
+      }
     };
   }
 
