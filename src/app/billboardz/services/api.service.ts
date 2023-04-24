@@ -49,17 +49,89 @@ const DELETE_SUPPLIER = gql`
 `;
 
 const GET_SUPPLIER = gql`
-  query getSupplier($id: String!) {
-    getSupplier(id: $id) {
+  query getSupplierById($id: String!) {
+    getSupplierById(id: $id) {
       name
       email
       address
       vatNumber
       contacts {
-        id
+        id: _id
         name
         email
         phone
+        role {
+          id: _id
+          role
+        }
+      }
+    }
+  }
+`;
+
+const CREATE_SUPPLIER_CONTACT = gql`
+  mutation createSupplierContact($supplierContact: SupplierContactInput!, $supplierId: String!, $supplierContactRoleIds: [String!]!) {
+    createSupplierContact(supplierContact: $supplierContact, supplierId: $supplierId, supplierContactRoleIds: $supplierContactRoleIds) {
+      id: _id
+      name
+      email
+      phone
+      role {
+        id: _id
+        role
+      }
+    }
+  }
+`;
+
+const UPDATE_SUPPLIER_CONTACT = gql`
+  mutation updateSupplierContact($supplierContact: SupplierContactInput!) {
+    updateSupplierContact(supplierContact: $supplierContact) {
+      id: _id
+      name
+      email
+      phone
+      role {
+        id: _id
+        role
+      }
+    }
+  }
+`;
+
+const DELETE_SUPPLIER_CONTACT = gql`
+  mutation deleteSupplierContact($id: String!) {
+    deleteSupplierContact(id: $id) {
+      id: _id
+      name
+      email
+      phone
+      role {
+        id: _id
+        role
+      }
+    }
+  }
+`;
+
+const GET_ROLES = gql`
+  {
+    getSupplierContactRoles {
+      id: _id
+      role
+    }
+  }
+`;
+
+const GET_SUPPLIER_CONTACTS = gql`
+  query getSupplierContacts($supplierId: String!) {
+    getSupplierContacts(supplierId: $supplierId) {
+      id: _id
+      name
+      email
+      phone
+      role {
+        id: _id
         role
       }
     }
@@ -116,6 +188,50 @@ export class ApiService {
       query: GET_SUPPLIER,
       variables: {
         id,
+      },
+    });
+  }
+
+  createSupplierContact(supplierContact: any, supplierId: string, supplierContactRoleIds: string[]) {
+    return this.apollo.mutate({
+      mutation: CREATE_SUPPLIER_CONTACT,
+      variables: {
+        supplierContact,
+        supplierId,
+        supplierContactRoleIds,
+      },
+    });
+  }
+
+  updateSupplierContact(supplierContact: any) {
+    return this.apollo.mutate({
+      mutation: UPDATE_SUPPLIER_CONTACT,
+      variables: {
+        supplierContact,
+      },
+    });
+  }
+
+  deleteSupplierContact(id: string) {
+    return this.apollo.mutate({
+      mutation: DELETE_SUPPLIER_CONTACT,
+      variables: {
+        id,
+      },
+    });
+  }
+
+  getRoles() {
+    return this.apollo.query({
+      query: GET_ROLES,
+    });
+  }
+
+  getSupplierContacts(supplierId: string) {
+    return this.apollo.query({
+      query: GET_SUPPLIER_CONTACTS,
+      variables: {
+        supplierId,
       },
     });
   }

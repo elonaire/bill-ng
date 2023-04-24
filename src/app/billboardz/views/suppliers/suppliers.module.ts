@@ -7,19 +7,27 @@ import { SuppliersComponent } from './suppliers/suppliers.component';
 import { SupplierDetailsComponent } from './supplier-details/supplier-details.component';
 import { TabMenuModule } from 'primeng/tabmenu';
 import { SupplierContactsComponent } from './supplier-contacts/supplier-contacts.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { InputTextModule } from 'primeng/inputtext';
+import { SupplierCitiesComponent } from './supplier-cities/supplier-cities.component';
 
 
 @NgModule({
   declarations: [
     SuppliersComponent,
     SupplierDetailsComponent,
-    SupplierContactsComponent
+    SupplierContactsComponent,
+    SupplierCitiesComponent
   ],
   imports: [
     CommonModule,
     SuppliersRoutingModule,
     CrudModule,
     TabMenuModule,
+    ReactiveFormsModule,
+    MultiSelectModule,
+    InputTextModule,
   ]
 })
 export class SuppliersModule { }

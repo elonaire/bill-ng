@@ -5,24 +5,29 @@ import {
   OnInit,
   Output,
   SimpleChanges,
-  ViewChild,
+  TemplateRef,
 } from '@angular/core';
-import { Product } from 'src/app/demo/api/product';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import {
   GenericTableConfigs,
   Supplier,
   TableColumn,
-} from 'src/app/@types/billboardz';
+} from 'src/app/@types/billboardz.d';
 import { ApiService } from '../../services/api.service';
 import { Apollo } from 'apollo-angular';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 
 export enum MutationType {
-    CREATE = 'create',
-    UPDATE = 'update',
-    DELETE = 'delete',
+  CREATE = 'create',
+  UPDATE = 'update',
+  DELETE = 'delete',
+}
+
+export interface FormMutationInfo {
+  mutationType: MutationType;
+  data?: Supplier;
 }
 
 @Component({
@@ -34,53 +39,42 @@ export class CrudComponent implements OnInit {
   @Input() tableConfigs!: GenericTableConfigs;
   @Output() changeEvent = new EventEmitter<any>();
   @Input() forcedChangeVal: any;
+  @Input() formTemplate!: TemplateRef<any>;
+  @Output() formTemplateEvent = new EventEmitter<FormMutationInfo>();
 
   data: Supplier[] = [];
   columns: TableColumn[] = [];
 
-  productDialog: boolean = false;
+  addItemDialog: boolean = false;
 
-  deleteProductDialog: boolean = false;
+  deleteItemDialog: boolean = false;
 
-  deleteProductsDialog: boolean = false;
+  deleteItemsDialog: boolean = false;
 
-  dataItem: Partial<Supplier> = {};
+  dataItem!: Supplier;
 
-  selectedProducts: Product[] = [];
+  selectedItems: Supplier[] = [];
 
   submitted: boolean = false;
 
   rowsPerPageOptions = [5, 10, 20];
-  addSupplierForm!: FormGroup;
-  updateSupplierForm!: FormGroup;
-  createOrUpdateForm!: FormGroup;
   selectedMutationType: MutationType = MutationType.CREATE;
+  itemId!: string | null;
 
   constructor(
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
     private apiService: ApiService,
     private apollo: Apollo,
-    private fb: FormBuilder
-  ) {}
+    private fb: FormBuilder,
+    private route: ActivatedRoute
+  ) {
+    this.itemId = this.route.snapshot.paramMap.get('id');
+  }
 
   ngOnInit() {
-    this.getData();
-    this.columns = this.tableConfigs?.columns;
-    this.addSupplierForm = this.fb.group({
-        name: ['', Validators.required],
-        address: ['', Validators.required],
-        email: ['', Validators.required],
-        vatNumber: ['', Validators.required],
-    });
-
-    this.updateSupplierForm = this.fb.group({
-        id: ['', Validators.required],
-        name: ['', Validators.required],
-        address: ['', Validators.required],
-        email: ['', Validators.required],
-        vatNumber: ['', Validators.required],
-    });
+    this.itemId ? this.getData(this.itemId) : this.getData();
+    this.columns = this.tableConfigs.columns;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -90,7 +84,7 @@ export class CrudComponent implements OnInit {
       changes['forcedChangeVal'].currentValue &&
       !changes['forcedChangeVal'].firstChange
     ) {
-      this.getData();
+      this.itemId ? this.getData(this.itemId) : this.getData();
     }
   }
 
@@ -99,43 +93,52 @@ export class CrudComponent implements OnInit {
 
     (this as any)[this.tableConfigs.requestParams.service][this.tableConfigs.requestParams.serviceMethod](args).subscribe(async (res: any) => {
       await this.apollo.client.resetStore();
-      this.data = (res.data as any)[this.tableConfigs.requestParams.graphQlQuery];
-      console.log('this.data', this.data);
+      if (Array.isArray(this.tableConfigs.requestParams.graphQlQuery)) {
+        this.data = this.getNestedValue(res, this.tableConfigs.requestParams.graphQlQuery);
+      } else {
+        this.data = res.data[this.tableConfigs.requestParams.graphQlQuery];
+      }
     });
   }
 
+  getNestedValue(obj: Record<string, any>, key: string | string[]): any {
+    if (typeof key === 'string') {
+        return obj[key];
+    }
+
+    return key.reduce((accumulator, currentKey) => {
+        return accumulator ? accumulator[currentKey] : undefined;
+    }, obj);
+};
+
   openNew() {
-    this.dataItem = {};
+    // this.dataItem = {};
     this.submitted = false;
-    this.productDialog = true;
-    this.createOrUpdateForm = this.addSupplierForm;
+    this.addItemDialog = true;
+    this.formTemplateEvent.emit({ mutationType: MutationType.CREATE });
   }
 
-  deleteSelectedProducts() {
-    this.deleteProductsDialog = true;
+  deleteSelectedItems() {
+    this.deleteItemsDialog = true;
   }
 
-  editProduct(dataItem: Supplier) {
+  editItem(dataItem: Supplier) {
     this.dataItem = { ...dataItem };
     console.log('this.dataItem', this.dataItem);
     
-    this.productDialog = true;
-    this.updateSupplierForm.patchValue(this.dataItem);
-    this.selectedMutationType = MutationType.UPDATE;
-    this.createOrUpdateForm = this.updateSupplierForm;
+    this.addItemDialog = true;
+    this.formTemplateEvent.emit({ mutationType: MutationType.UPDATE, data: this.dataItem });
   }
 
-  deleteProduct(dataItem: Supplier) {
-    this.deleteProductDialog = true;
+  deleteItem(dataItem: Supplier) {
+    this.deleteItemDialog = true;
     this.dataItem = { ...dataItem };
   }
 
   confirmDeleteSelected() {
-    this.deleteProductsDialog = false;
-    this.selectedProducts.forEach((dataItem) => {
-      this.apiService.deleteSupplier(dataItem.id as string).subscribe((res) => {
-          this.changeEvent.emit((res.data as any).deleteSupplier);
-        });
+    this.deleteItemsDialog = false;
+    this.selectedItems.forEach((dataItem) => {
+      this.formTemplateEvent.emit({ mutationType: MutationType.DELETE, data: dataItem });
     });
     this.messageService.add({
       severity: 'success',
@@ -143,43 +146,30 @@ export class CrudComponent implements OnInit {
       detail: 'Products Deleted',
       life: 3000,
     });
-    this.selectedProducts = [];
+    this.selectedItems = [];
   }
 
-  confirmDelete(row: Partial<Supplier>) {
-    this.deleteProductDialog = false;
-    this.apiService.deleteSupplier(row.id as string).subscribe((res) => {
-        this.changeEvent.emit((res.data as any).deleteSupplier);
-      });
+  confirmDelete(row: Supplier) {
+    this.deleteItemDialog = false;
+    this.formTemplateEvent.emit({ mutationType: MutationType.DELETE, data: row });
     this.messageService.add({
       severity: 'success',
       summary: 'Successful',
       detail: 'Product Deleted',
       life: 3000,
     });
-    this.dataItem = {};
+    // this.dataItem = {};
   }
 
   hideDialog() {
-    this.productDialog = false;
+    this.addItemDialog = false;
     this.submitted = false;
   }
 
-  saveProduct(opType: MutationType) {
+  saveItem(opType: MutationType) {
     this.submitted = true;
     console.log('opType', opType);
-    
-
-    if (opType === MutationType.CREATE) {
-        this.apiService.createSupplier(this.addSupplierForm.value).subscribe((res) => {
-            this.changeEvent.emit((res.data as any).createSupplier);
-            this.addSupplierForm.reset();
-          });
-    } else {
-        this.apiService.updateSupplier(this.updateSupplierForm.value).subscribe((res) => {
-            this.changeEvent.emit((res.data as any).updateSupplier);
-          });
-    }
+    this.formTemplateEvent.emit({ mutationType: opType, data: this.dataItem });
   }
 
   findIndexById(id: string): number {
@@ -198,7 +188,7 @@ export class CrudComponent implements OnInit {
     table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
   }
 
-  get MutationType() {
-    return MutationType;
-  }
+  // get MutationType() {
+  //   return MutationType;
+  // }
 }

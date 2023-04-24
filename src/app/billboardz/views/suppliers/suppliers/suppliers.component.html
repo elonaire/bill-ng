@@ -1,1 +1,24 @@
-<app-generic-table (changeEvent)="handleChangeEvent($event)" [forcedChangeVal]="forcedChangeVal" [tableConfigs]="tableConfigs"></app-generic-table>
+<app-generic-table (changeEvent)="handleChangeEvent($event)" [formTemplate]="addSupplierFormTemplate" (formTemplateEvent)="handleFormTemplateEvent($event)" [forcedChangeVal]="forcedChangeVal" [tableConfigs]="tableConfigs">
+    <ng-template #addSupplierFormTemplate pTemplate="content">
+        <div [formGroup]="createOrUpdateForm" class="card p-fluid">
+            <div class="field">
+                <label htmlFor="Name">Name</label>
+                <input pInputText formControlName="name" type="text" />
+            </div>
+            <div class="field">
+                <label htmlFor="Email">Email</label>
+                <input pInputText formControlName="email" type="text" />
+            </div>
+            <div class="field">
+                <label htmlFor="Address">Address</label>
+                <input pInputText formControlName="address" type="text" />
+            </div>
+            <div class="field">
+                <label htmlFor="VAT Number">VAT Number</label>
+                <input pInputText formControlName="vatNumber" type="text" />
+            </div>
+        </div>
+    </ng-template>
+</app-generic-table>
+
+

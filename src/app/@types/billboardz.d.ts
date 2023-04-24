@@ -22,11 +22,23 @@ export interface TableColumn {
     showDelete: boolean;
     wrapInCard?: boolean;
     requestParams: RequestParams;
+    graphQLOpType?: GraphQLOpType;
   }
 
   export interface RequestParams {
     service: string;
     serviceMethod: string;
-    graphQlQuery: string;
+    graphQlQuery: string | string[];
   }
+
+  export enum GraphQLOpType {
+    QUERY = 'query',
+    MUTATION = 'mutation',
+  }
+
+  export enum MutationType {
+    CREATE = 'create',
+    UPDATE = 'update',
+    DELETE = 'delete',
+}
   
