@@ -8,6 +8,7 @@ const routes: Routes = [
     component: AppLayoutComponent,
     children: [
         { path: '', loadChildren: () => import('./views/suppliers/suppliers.module').then((m) => m.SuppliersModule) },
+        { path: 'billboards', loadChildren: () => import('./views/billboards/billboards.module').then((m) => m.BillboardsModule) },
     ]
   },
 ];

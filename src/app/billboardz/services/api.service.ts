@@ -2,151 +2,31 @@ import { Injectable } from '@angular/core';
 import { InMemoryCache } from '@apollo/client/core';
 import { Apollo, gql } from 'apollo-angular';
 import { HttpLink } from 'apollo-angular/http';
-
-const GET_SUPPLIERS = gql`
-  {
-    getSuppliers {
-      id
-      name
-      email
-      address
-      vatNumber
-    }
-  }
-`;
-
-const CREATE_SUPPLIER = gql`
-  mutation createSupplier($supplier: SupplierInput!) {
-    createSupplier(supplier: $supplier) {
-      name
-      email
-      address
-      vatNumber
-    }
-  }
-`;
-
-const UPDATE_SUPPLIER = gql`
-  mutation updateSupplier($supplier: SupplierInput!) {
-    updateSupplier(supplier: $supplier) {
-      name
-      email
-      address
-      vatNumber
-    }
-  }
-`;
-
-const DELETE_SUPPLIER = gql`
-  mutation deleteSupplier($id: String!) {
-    deleteSupplier(id: $id) {
-      name
-      email
-      address
-      vatNumber
-    }
-  }
-`;
-
-const GET_SUPPLIER = gql`
-  query getSupplierById($id: String!) {
-    getSupplierById(id: $id) {
-      name
-      email
-      address
-      vatNumber
-      contacts {
-        id: _id
-        name
-        email
-        phone
-        role {
-          id: _id
-          role
-        }
-      }
-    }
-  }
-`;
-
-const CREATE_SUPPLIER_CONTACT = gql`
-  mutation createSupplierContact($supplierContact: SupplierContactInput!, $supplierId: String!, $supplierContactRoleIds: [String!]!) {
-    createSupplierContact(supplierContact: $supplierContact, supplierId: $supplierId, supplierContactRoleIds: $supplierContactRoleIds) {
-      id: _id
-      name
-      email
-      phone
-      role {
-        id: _id
-        role
-      }
-    }
-  }
-`;
-
-const UPDATE_SUPPLIER_CONTACT = gql`
-  mutation updateSupplierContact($supplierContact: SupplierContactInput!) {
-    updateSupplierContact(supplierContact: $supplierContact) {
-      id: _id
-      name
-      email
-      phone
-      role {
-        id: _id
-        role
-      }
-    }
-  }
-`;
-
-const DELETE_SUPPLIER_CONTACT = gql`
-  mutation deleteSupplierContact($id: String!) {
-    deleteSupplierContact(id: $id) {
-      id: _id
-      name
-      email
-      phone
-      role {
-        id: _id
-        role
-      }
-    }
-  }
-`;
-
-const GET_ROLES = gql`
-  {
-    getSupplierContactRoles {
-      id: _id
-      role
-    }
-  }
-`;
-
-const GET_SUPPLIER_CONTACTS = gql`
-  query getSupplierContacts($supplierId: String!) {
-    getSupplierContacts(supplierId: $supplierId) {
-      id: _id
-      name
-      email
-      phone
-      role {
-        id: _id
-        role
-      }
-    }
-  }
-`;
+import {
+  GET_SUPPLIERS,
+  CREATE_SUPPLIER,
+  UPDATE_SUPPLIER,
+  DELETE_SUPPLIER,
+  GET_SUPPLIER,
+  CREATE_SUPPLIER_CONTACT,
+  UPDATE_SUPPLIER_CONTACT,
+  DELETE_SUPPLIER_CONTACT,
+  GET_ROLES,
+  GET_SUPPLIER_CONTACTS,
+  GET_BILLBOARD_TYPES,
+  CREATE_BILLBOARD_TYPE,
+  UPDATE_BILLBOARD_TYPE,
+  DELETE_BILLBOARD_TYPE,
+} from './graphql.ops';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ApiService {
-
   constructor(private apollo: Apollo, private httpLink: HttpLink) {
     apollo.create({
       link: this.httpLink.create({ uri: 'http://localhost:3000/graphql' }),
-      cache: new InMemoryCache()
+      cache: new InMemoryCache(),
     });
   }
 
@@ -192,7 +72,11 @@ export class ApiService {
     });
   }
 
-  createSupplierContact(supplierContact: any, supplierId: string, supplierContactRoleIds: string[]) {
+  createSupplierContact(
+    supplierContact: any,
+    supplierId: string,
+    supplierContactRoleIds: string[]
+  ) {
     return this.apollo.mutate({
       mutation: CREATE_SUPPLIER_CONTACT,
       variables: {
@@ -232,6 +116,39 @@ export class ApiService {
       query: GET_SUPPLIER_CONTACTS,
       variables: {
         supplierId,
+      },
+    });
+  }
+
+  getBillboardTypes() {
+    return this.apollo.query({
+      query: GET_BILLBOARD_TYPES,
+    });
+  }
+
+  createBillboardType(billboardType: any) {
+    return this.apollo.mutate({
+      mutation: CREATE_BILLBOARD_TYPE,
+      variables: {
+        billboardType,
+      },
+    });
+  }
+
+  updateBillboardType(billboardType: any) {
+    return this.apollo.mutate({
+      mutation: UPDATE_BILLBOARD_TYPE,
+      variables: {
+        billboardType,
+      },
+    });
+  }
+
+  deleteBillboardType(id: string) {
+    return this.apollo.mutate({
+      mutation: DELETE_BILLBOARD_TYPE,
+      variables: {
+        id,
       },
     });
   }

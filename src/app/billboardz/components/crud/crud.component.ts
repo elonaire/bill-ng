@@ -59,7 +59,7 @@ export class CrudComponent implements OnInit {
 
   rowsPerPageOptions = [5, 10, 20];
   selectedMutationType: MutationType = MutationType.CREATE;
-  itemId!: string | null;
+  itemId!: string | null | undefined;
 
   constructor(
     private messageService: MessageService,
@@ -69,7 +69,7 @@ export class CrudComponent implements OnInit {
     private fb: FormBuilder,
     private route: ActivatedRoute
   ) {
-    this.itemId = this.route.snapshot.paramMap.get('id');
+    this.itemId = this.route?.parent?.snapshot.paramMap.get('id');
   }
 
   ngOnInit() {
