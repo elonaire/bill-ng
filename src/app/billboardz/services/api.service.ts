@@ -17,6 +17,10 @@ import {
   CREATE_BILLBOARD_TYPE,
   UPDATE_BILLBOARD_TYPE,
   DELETE_BILLBOARD_TYPE,
+  GET_CITIES,
+  CREATE_CITY,
+  UPDATE_CITY,
+  DELETE_CITY,
 } from './graphql.ops';
 
 @Injectable({
@@ -147,6 +151,40 @@ export class ApiService {
   deleteBillboardType(id: string) {
     return this.apollo.mutate({
       mutation: DELETE_BILLBOARD_TYPE,
+      variables: {
+        id,
+      },
+    });
+  }
+
+  /* Cities */
+  getCities() {
+    return this.apollo.query({
+      query: GET_CITIES,
+    });
+  }
+
+  createCity(city: any) {
+    return this.apollo.mutate({
+      mutation: CREATE_CITY,
+      variables: {
+        city,
+      },
+    });
+  }
+
+  updateCity(city: any) {
+    return this.apollo.mutate({
+      mutation: UPDATE_CITY,
+      variables: {
+        city,
+      },
+    });
+  }
+
+  deleteCity(id: string) {
+    return this.apollo.mutate({
+      mutation: DELETE_CITY,
       variables: {
         id,
       },

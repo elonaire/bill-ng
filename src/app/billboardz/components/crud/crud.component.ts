@@ -127,6 +127,7 @@ export class CrudComponent implements OnInit {
     console.log('this.dataItem', this.dataItem);
     
     this.addItemDialog = true;
+    this.selectedMutationType = MutationType.UPDATE;
     this.formTemplateEvent.emit({ mutationType: MutationType.UPDATE, data: this.dataItem });
   }
 

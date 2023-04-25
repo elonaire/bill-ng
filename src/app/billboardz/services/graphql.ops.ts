@@ -143,6 +143,8 @@ export const GET_SUPPLIER_CONTACTS = gql`
   }
 `;
 
+/* Billboards Types */
+
 export const GET_BILLBOARD_TYPES = gql`
   {
     getBillboardTypes {
@@ -153,25 +155,87 @@ export const GET_BILLBOARD_TYPES = gql`
 `;
 
 export const CREATE_BILLBOARD_TYPE = gql`
-    mutation createBillboardType($billboardType: BillboardTypeInput!) {
-        createBillboardType(billboardType: $billboardType) {
-            name
-        }
+  mutation createBillboardType($billboardType: BillboardTypeInput!) {
+    createBillboardType(billboardType: $billboardType) {
+      name
     }
+  }
 `;
 
 export const UPDATE_BILLBOARD_TYPE = gql`
-    mutation updateBillboardType($billboardType: BillboardTypeInput!) {
-        updateBillboardType(billboardType: $billboardType) {
-            name
-        }
+  mutation updateBillboardType($billboardType: BillboardTypeInput!) {
+    updateBillboardType(billboardType: $billboardType) {
+      name
     }
+  }
 `;
 
 export const DELETE_BILLBOARD_TYPE = gql`
-    mutation deleteBillboardType($id: String!) {
-        deleteBillboardType(id: $id) {
-            name
-        }
+  mutation deleteBillboardType($id: String!) {
+    deleteBillboardType(id: $id) {
+      name
     }
+  }
+`;
+
+/* Cities */
+
+export const CREATE_CITY = gql`
+  mutation createCity($city: CityInput!) {
+    createCity(city: $city) {
+      id
+      name
+      population
+      men
+      women
+      area
+      socio_economy
+      license_holders
+    }
+  }
+`;
+
+export const UPDATE_CITY = gql`
+  mutation updateCity($city: CityInput!) {
+    updateCity(city: $city) {
+      id
+      name
+      population
+      men
+      women
+      area
+      socio_economy
+      license_holders
+    }
+  }
+`;
+
+export const DELETE_CITY = gql`
+  mutation deleteCity($id: String!) {
+    deleteCity(id: $id) {
+      id
+      name
+      population
+      men
+      women
+      area
+      socio_economy
+      license_holders
+    }
+  }
+`;
+
+export const GET_CITIES = gql`
+  {
+    getCities {
+      id
+      name
+      population
+      men
+      women
+      area
+      socio_economy
+      license_holders
+    }
+  }
 `;
