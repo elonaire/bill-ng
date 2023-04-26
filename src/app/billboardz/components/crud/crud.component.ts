@@ -10,6 +10,7 @@ import {
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import {
+  AppState,
   GenericTableConfigs,
   Supplier,
   TableColumn,
@@ -19,7 +20,7 @@ import { Apollo } from 'apollo-angular';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { loadSupplierContacts, loadSuppliers } from 'src/app/store/actions/suppliers.actions';
+import * as selectors from '../../../store/selectors';
 
 export enum MutationType {
   CREATE = 'create',
@@ -70,17 +71,13 @@ export class CrudComponent implements OnInit {
     private apollo: Apollo,
     private fb: FormBuilder,
     private route: ActivatedRoute,
-    private store: Store<{ suppliers: Supplier[] }>
+    private store: Store<AppState>
   ) {
     this.itemId = this.route?.parent?.snapshot.paramMap.get('id');
   }
 
   ngOnInit() {
-    this.store.dispatch(loadSuppliers());
-    console.log('this.itemId', this.itemId);
-    
-    this.store.dispatch(loadSupplierContacts({supplierId: this.itemId as string}));
-    this.itemId ? this.getData(this.itemId) : this.getData();
+    this.getData();
     this.columns = this.tableConfigs.columns;
   }
 
@@ -91,20 +88,14 @@ export class CrudComponent implements OnInit {
       changes['forcedChangeVal'].currentValue &&
       !changes['forcedChangeVal'].firstChange
     ) {
-      this.itemId ? this.getData(this.itemId) : this.getData();
+      this.getData();
     }
   }
 
-  getData(args?: any) {
-    console.log('getData');
-
-    (this as any)[this.tableConfigs.requestParams.service][this.tableConfigs.requestParams.serviceMethod](args).subscribe(async (res: any) => {
-      await this.apollo.client.resetStore();
-      if (Array.isArray(this.tableConfigs.requestParams.graphQlQuery)) {
-        this.data = this.getNestedValue(res, this.tableConfigs.requestParams.graphQlQuery);
-      } else {
-        this.data = res.data[this.tableConfigs.requestParams.graphQlQuery];
-      }
+  getData() {
+    this.store.select((selectors as any)[this.tableConfigs.requestParams.storeSelector]).subscribe((res) => {
+      console.log('res', res);
+      this.data = res;
     });
   }
 

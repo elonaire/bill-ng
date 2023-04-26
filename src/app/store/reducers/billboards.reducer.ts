@@ -16,7 +16,7 @@ const billboardsReducer = createReducer(
       return {
         ...state,
         loading: false,
-        suppliers: payload.data['getBillboardTypes'],
+        billboardTypes: payload.data['getBillboardTypes'],
       };
     }),
     );

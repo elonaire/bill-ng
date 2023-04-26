@@ -11,6 +11,8 @@ import { EffectsModule } from '@ngrx/effects';
 import { SuppliersEffects } from './store/effects/suppliers.effects';
 import *  as fromBillboards from './store/reducers/billboards.reducer';
 import * as fromCities from './store/reducers/cities.reducer';
+import { BillboardsEffects } from './store/effects/billboards.effects';
+import { CitiesEffects } from './store/effects/cities.effects';
 
 @NgModule({
   declarations: [AppComponent],
@@ -20,7 +22,9 @@ import * as fromCities from './store/reducers/cities.reducer';
     ApolloModule,
     StoreModule.forRoot({ suppliers: fromSuppliers.reducer, billboards: fromBillboards.reducer, cities: fromCities.reducer }),
     EffectsModule.forRoot([
-        SuppliersEffects
+        SuppliersEffects,
+        CitiesEffects,
+        BillboardsEffects
     ]),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
   ],

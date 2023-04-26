@@ -5,9 +5,13 @@ import {
   TableColumn,
   GenericTableConfigs,
   Supplier,
+  AppState,
 } from 'src/app/@types/billboardz';
 import { FormMutationInfo } from 'src/app/billboardz/components/crud/crud.component';
 import { ApiService } from 'src/app/billboardz/services/api.service';
+import { StoreSelectors } from '../suppliers/suppliers.component';
+import { Store } from '@ngrx/store';
+import { loadSupplierContacts } from 'src/app/store/actions/suppliers.actions';
 
 export enum MutationType {
   CREATE = 'create',
@@ -24,7 +28,8 @@ export class SupplierContactsComponent {
   constructor(
     private fb: FormBuilder,
     private apiService: ApiService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private store: Store<AppState>,
   ) {
     this.tableConfigs = {
       tableName: '',
@@ -33,9 +38,7 @@ export class SupplierContactsComponent {
       showExport: false,
       showImport: false,
       requestParams: {
-        service: 'apiService',
-        serviceMethod: 'getSupplierContacts',
-        graphQlQuery: 'getSupplierContacts',
+        storeSelector: StoreSelectors.SUPPLIER_CONTACTS,
       },
     };
   }
@@ -56,7 +59,10 @@ export class SupplierContactsComponent {
 
   ngOnInit(): void {
     this.getRoles();
-    this.currentSupplierId = this.route.snapshot.paramMap.get('id') as string;
+    this.currentSupplierId = this.route?.parent?.snapshot.paramMap.get('id') as string;
+    console.log('currentSupplierId', this.currentSupplierId);
+    
+    this.store.dispatch(loadSupplierContacts({ supplierId: this.currentSupplierId }));
     this.addSupplierContactForm = this.fb.group({
       name: ['', Validators.required],
       email: ['', Validators.required],

@@ -1,6 +1,9 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Store } from '@ngrx/store';
 import {
+  AppState,
+  BillboardzSuppliersState,
   GenericTableConfigs,
   GraphQLOpType,
   Supplier,
@@ -8,11 +11,20 @@ import {
 } from 'src/app/@types/billboardz.d';
 import { FormMutationInfo } from 'src/app/billboardz/components/crud/crud.component';
 import { ApiService } from 'src/app/billboardz/services/api.service';
+import { loadSuppliers } from 'src/app/store/actions/suppliers.actions';
 
 export enum MutationType {
   CREATE = 'create',
   UPDATE = 'update',
   DELETE = 'delete',
+}
+
+export enum StoreSelectors {
+  SUPPLIERS = 'selectSuppliers',
+  BILLBOARDS = 'selectBillboards',
+  SUPPLIER_CONTACTS = 'selectSupplierContacts',
+  BILLBOARD_TYPES = 'selectBillboardTypes',
+  CITIES = 'selectCities',
 }
 
 @Component({
@@ -21,7 +33,11 @@ export enum MutationType {
   styleUrls: ['./suppliers.component.scss'],
 })
 export class SuppliersComponent implements OnInit {
-  constructor(private fb: FormBuilder, private apiService: ApiService) {
+  constructor(
+    private fb: FormBuilder,
+    private apiService: ApiService,
+    private store: Store<AppState>
+  ) {
     this.tableConfigs = {
       tableName: 'Suppliers',
       columns: this.supplierTableColumns,
@@ -30,9 +46,7 @@ export class SuppliersComponent implements OnInit {
       showImport: true,
       wrapInCard: true,
       requestParams: {
-        service: 'apiService',
-        serviceMethod: 'getSuppliers',
-        graphQlQuery: 'getSuppliers',
+        storeSelector: StoreSelectors.SUPPLIERS,
       },
       // graphQLOpType: GraphQLOpType.QUERY,
     };
@@ -51,6 +65,7 @@ export class SuppliersComponent implements OnInit {
   createOrUpdateForm!: FormGroup;
 
   ngOnInit(): void {
+    this.store.dispatch(loadSuppliers());
     this.addSupplierForm = this.fb.group({
       name: ['', Validators.required],
       address: ['', Validators.required],
@@ -93,7 +108,7 @@ export class SuppliersComponent implements OnInit {
 
   handleFormTemplateEvent(event: FormMutationInfo) {
     console.log('handleFormTemplateEvent', event);
-    
+
     // this.selectedMutationType = event;
     if (event.mutationType === MutationType.CREATE) {
       this.createOrUpdateForm = this.addSupplierForm;
@@ -101,9 +116,11 @@ export class SuppliersComponent implements OnInit {
       this.createOrUpdateForm = this.updateSupplierForm;
       this.createOrUpdateForm.patchValue(event.data as Supplier);
     } else if (event.mutationType === MutationType.DELETE) {
-      this.apiService.deleteSupplier(event.data?.id as string).subscribe((res) => {
-        this.forcedChangeVal = new Date().getTime();
-      });
+      this.apiService
+        .deleteSupplier(event.data?.id as string)
+        .subscribe((res) => {
+          this.forcedChangeVal = new Date().getTime();
+        });
     }
 
     if (this.createOrUpdateForm.valid) {

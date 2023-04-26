@@ -7,7 +7,7 @@ import { ApiService } from "src/app/billboardz/services/api.service";
 export class CitiesEffects {
   constructor(private actions$: Actions, private apiService: ApiService) {}
 
-  loadBillboardTypes$ = createEffect(() =>
+  loadCities$ = createEffect(() =>
     this.actions$.pipe(
       ofType('[Cities] Load Cities'),
       mergeMap(() =>

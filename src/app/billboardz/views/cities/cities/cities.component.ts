@@ -1,8 +1,11 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { TableColumn, GenericTableConfigs, Supplier } from 'src/app/@types/billboardz';
+import { TableColumn, GenericTableConfigs, Supplier, AppState } from 'src/app/@types/billboardz';
 import { FormMutationInfo } from 'src/app/billboardz/components/crud/crud.component';
 import { ApiService } from 'src/app/billboardz/services/api.service';
+import { StoreSelectors } from '../../suppliers/suppliers/suppliers.component';
+import { Store } from '@ngrx/store';
+import { loadCities } from 'src/app/store/actions/cities.actions';
 
 export enum MutationType {
   CREATE = 'create',
@@ -16,7 +19,7 @@ export enum MutationType {
   styleUrls: ['./cities.component.scss']
 })
 export class CitiesComponent {
-  constructor(private fb: FormBuilder, private apiService: ApiService) {
+  constructor(private fb: FormBuilder, private apiService: ApiService, private store: Store<AppState>) {
     this.tableConfigs = {
       tableName: 'Cities',
       columns: this.supplierTableColumns,
@@ -25,9 +28,7 @@ export class CitiesComponent {
       showImport: true,
       wrapInCard: true,
       requestParams: {
-        service: 'apiService',
-        serviceMethod: 'getCities',
-        graphQlQuery: 'getCities',
+        storeSelector: StoreSelectors.CITIES,
       },
       // graphQLOpType: GraphQLOpType.QUERY,
     };
@@ -50,6 +51,8 @@ export class CitiesComponent {
   createOrUpdateForm!: FormGroup;
 
   ngOnInit(): void {
+    this.store.dispatch(loadCities());
+    
     this.addSupplierForm = this.fb.group({
       name: ['', Validators.required],
       population: ['', Validators.required],

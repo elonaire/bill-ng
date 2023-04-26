@@ -26,9 +26,7 @@ export interface GenericTableConfigs {
 }
 
 export interface RequestParams {
-  service: string;
-  serviceMethod: string;
-  graphQlQuery: string | string[];
+  storeSelector: StoreSelectors;
 }
 
 export enum GraphQLOpType {
@@ -63,4 +61,18 @@ export type BillboardzBillboardsState = {
 export type BillboardzCitiesState = {
   cities: any[];
   loading: boolean;
+};
+
+export enum StoreSelectors {
+  SUPPLIERS = 'selectSuppliers',
+  BILLBOARDS = 'selectBillboards',
+  SUPPLIER_CONTACTS = 'selectSupplierContacts',
+  BILLBOARD_TYPES = 'selectBillboardTypes',
+  CITIES = 'selectCities',
+}
+
+export type AppState = {
+  suppliers: BillboardzSuppliersState;
+  billboards: BillboardzBillboardsState;
+  cities: BillboardzCitiesState;
 };

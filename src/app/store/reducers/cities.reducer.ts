@@ -15,7 +15,7 @@ const citiesReducer = createReducer(
       return {
         ...state,
         loading: false,
-        suppliers: payload.data['getCities'],
+        cities: payload.data['getCities'],
       };
     }),
     );

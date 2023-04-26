@@ -1,8 +1,11 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { TableColumn, GenericTableConfigs, Supplier } from 'src/app/@types/billboardz';
+import { TableColumn, GenericTableConfigs, Supplier, AppState } from 'src/app/@types/billboardz';
 import { FormMutationInfo } from 'src/app/billboardz/components/crud/crud.component';
 import { ApiService } from 'src/app/billboardz/services/api.service';
+import { StoreSelectors } from '../../suppliers/suppliers/suppliers.component';
+import { Store } from '@ngrx/store';
+import { loadBillboardTypes } from 'src/app/store/actions/billboards.actions';
 
 export enum MutationType {
   CREATE = 'create',
@@ -16,7 +19,7 @@ export enum MutationType {
   styleUrls: ['./billboard-types.component.scss']
 })
 export class BillboardTypesComponent {
-  constructor(private fb: FormBuilder, private apiService: ApiService) {
+  constructor(private fb: FormBuilder, private apiService: ApiService, private store: Store<AppState>) {
     this.tableConfigs = {
       tableName: 'Billboard Types',
       columns: this.supplierTableColumns,
@@ -25,9 +28,7 @@ export class BillboardTypesComponent {
       showImport: true,
       wrapInCard: true,
       requestParams: {
-        service: 'apiService',
-        serviceMethod: 'getBillboardTypes',
-        graphQlQuery: 'getBillboardTypes',
+        storeSelector: StoreSelectors.BILLBOARD_TYPES,
       },
       // graphQLOpType: GraphQLOpType.QUERY,
     };
@@ -44,6 +45,7 @@ export class BillboardTypesComponent {
   createOrUpdateForm!: FormGroup;
 
   ngOnInit(): void {
+    this.store.dispatch(loadBillboardTypes());
     this.addSupplierForm = this.fb.group({
       name: ['', Validators.required],
     });
