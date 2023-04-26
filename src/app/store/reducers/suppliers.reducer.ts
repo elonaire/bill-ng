@@ -1,8 +1,8 @@
 import { createReducer, Action, on } from "@ngrx/store";
-import { BillboardzState } from "src/app/@types/billboardz";
+import { BillboardzSuppliersState } from "src/app/@types/billboardz";
 import { loadSupplierContacts, loadSupplierContactsSuccess, loadSuppliers, loadSuppliersSuccess } from "../actions/suppliers.actions";
 
-export const INITIAL_STATE: BillboardzState = {
+export const INITIAL_STATE: BillboardzSuppliersState = {
   suppliers: [],
   loading: false,
   supplierContacts: [],
@@ -15,7 +15,7 @@ const suppliersReducer = createReducer(
     
     return {
       ...state,
-      loading: true,
+      loading: false,
       suppliers: payload.data['getSuppliers'],
     };
   }),
@@ -24,12 +24,12 @@ const suppliersReducer = createReducer(
     console.log('loadSupplierContactsSuccess', payload);
     return {
       ...state,
-      loading: true,
+      loading: false,
       supplierContacts: payload.data['getSupplierContacts'],
     };
   })
   );
 
-export function reducer(state: BillboardzState | undefined, action: Action) {
+export function reducer(state: BillboardzSuppliersState | undefined, action: Action) {
   return suppliersReducer(state, action);
 }

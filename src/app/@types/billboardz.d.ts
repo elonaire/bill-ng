@@ -42,7 +42,7 @@ export enum MutationType {
   DELETE = 'delete',
 }
 
-export type BillboardzState = {
+export type BillboardzSuppliersState = {
   suppliers: Supplier[];
   loading: boolean;
   supplierContacts: any[];
@@ -52,4 +52,15 @@ export type ActionPayloadResponse = {
   data: {
     [key: string]: any;
   };
+};
+
+export type BillboardzBillboardsState = {
+  billboards: any[];
+  loading: boolean;
+  billboardTypes: any[];
+};
+
+export type BillboardzCitiesState = {
+  cities: any[];
+  loading: boolean;
 };
