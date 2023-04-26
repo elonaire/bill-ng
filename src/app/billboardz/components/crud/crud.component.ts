@@ -18,6 +18,8 @@ import { ApiService } from '../../services/api.service';
 import { Apollo } from 'apollo-angular';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { loadSupplierContacts, loadSuppliers } from 'src/app/store/actions/suppliers.actions';
 
 export enum MutationType {
   CREATE = 'create',
@@ -67,12 +69,17 @@ export class CrudComponent implements OnInit {
     private apiService: ApiService,
     private apollo: Apollo,
     private fb: FormBuilder,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private store: Store<{ suppliers: Supplier[] }>
   ) {
     this.itemId = this.route?.parent?.snapshot.paramMap.get('id');
   }
 
   ngOnInit() {
+    this.store.dispatch(loadSuppliers());
+    console.log('this.itemId', this.itemId);
+    
+    this.store.dispatch(loadSupplierContacts({supplierId: this.itemId as string}));
     this.itemId ? this.getData(this.itemId) : this.getData();
     this.columns = this.tableConfigs.columns;
   }
