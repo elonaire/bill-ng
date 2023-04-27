@@ -9,6 +9,9 @@ import { InputTextModule } from 'primeng/inputtext';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { TabMenuModule } from 'primeng/tabmenu';
 import { CrudModule } from '../../components/crud/crud.module';
+import { GMapModule } from 'primeng/gmap';
+import { GoogleMapsModule } from '@angular/google-maps';
+import { DropdownModule } from 'primeng/dropdown';
 
 
 @NgModule({
@@ -24,6 +27,9 @@ import { CrudModule } from '../../components/crud/crud.module';
     ReactiveFormsModule,
     MultiSelectModule,
     InputTextModule,
+    GMapModule,
+    GoogleMapsModule,
+    DropdownModule
   ]
 })
 export class BillboardsModule { }

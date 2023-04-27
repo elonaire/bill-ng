@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { InMemoryCache } from '@apollo/client/core';
-import { Apollo, gql } from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import { HttpLink } from 'apollo-angular/http';
 import {
   GET_SUPPLIERS,
@@ -21,13 +21,18 @@ import {
   CREATE_CITY,
   UPDATE_CITY,
   DELETE_CITY,
+  GET_BILLBOARDS,
+  CREATE_BILLBOARD,
+  DELETE_BILLBOARD,
+  UPDATE_BILLBOARD,
 } from './graphql.ops';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ApiService {
-  constructor(private apollo: Apollo, private httpLink: HttpLink) {
+  constructor(private apollo: Apollo, private httpLink: HttpLink, private http: HttpClient) {
     apollo.create({
       link: this.httpLink.create({ uri: 'http://localhost:3000/graphql' }),
       cache: new InMemoryCache(),
@@ -187,6 +192,47 @@ export class ApiService {
       mutation: DELETE_CITY,
       variables: {
         id,
+      },
+    });
+  }
+
+  /* Google Maps */
+  getCitiesWithinRadius(radius: number, lat: number, lng: number) {
+    return this.http.get(
+      `https://maps.googleapis.com/maps/api/place/nearbysearch/json?type=locality&location=${lat},${lng}&key=AIzaSyBi2bAqDJmx3gLWUyB3M7UwShJurO4hEDs&radius=${radius}`
+    );
+  }
+
+  /* Billboards */
+  getBillboards() {
+    return this.apollo.query({
+      query: GET_BILLBOARDS
+    });
+  }
+
+  createBillboard(billboard: any) {
+    return this.apollo.mutate({
+      mutation: CREATE_BILLBOARD,
+      variables: {
+        billboard,
+      },
+    });
+  }
+
+  deleteBillboard(id: string) {
+    return this.apollo.mutate({
+      mutation: DELETE_BILLBOARD,
+      variables: {
+        id,
+      },
+    });
+  }
+
+  updateBillboard(billboard: any) {
+    return this.apollo.mutate({
+      mutation: UPDATE_BILLBOARD,
+      variables: {
+        billboard,
       },
     });
   }

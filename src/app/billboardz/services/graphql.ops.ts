@@ -239,3 +239,109 @@ export const GET_CITIES = gql`
     }
   }
 `;
+
+/* Billboards */
+
+export const CREATE_BILLBOARD = gql`
+  mutation createBillboard($billboard: BillboardInput!) {
+    createBillboard(billboard: $billboard) {
+      id
+      type {
+        id
+        name
+      }
+      city {
+        id
+        name
+      }
+      address {
+        longitude
+        latitude
+      }
+      billboardNumber
+      totalSize
+      supplier {
+        id
+        name
+      }
+    }
+  }
+`;
+
+export const UPDATE_BILLBOARD = gql`
+  mutation updateBillboard($billboard: BillboardInput!) {
+    updateBillboard(billboard: $billboard) {
+      id
+      type {
+        id
+        name
+      }
+      city {
+        id
+        name
+      }
+      address {
+        longitude
+        latitude
+      }
+      billboardNumber
+      totalSize
+      supplier {
+        id
+        name
+      }
+    }
+  }
+`;
+
+export const DELETE_BILLBOARD = gql`
+  mutation deleteBillboard($id: String!) {
+    deleteBillboard(id: $id) {
+      id
+      type {
+        id
+        name
+      }
+      city {
+        id
+        name
+      }
+      address {
+        longitude
+        latitude
+      }
+      billboardNumber
+      totalSize
+      supplier {
+        id
+        name
+      }
+    }
+  }
+`;
+
+export const GET_BILLBOARDS = gql`
+  {
+    getBillboards {
+      id
+      type {
+        id
+        name
+      }
+      city {
+        id
+        name
+      }
+      address {
+        longitude
+        latitude
+      }
+      billboardNumber
+      totalSize
+      supplier {
+        id
+        name
+      }
+    }
+  }
+`;

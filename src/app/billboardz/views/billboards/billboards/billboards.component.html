@@ -1,17 +1,66 @@
-<app-generic-table (changeEvent)="handleChangeEvent($event)" [formTemplate]="formTemplate" (formTemplateEvent)="handleFormTemplateEvent($event)" [forcedChangeVal]="forcedChangeVal" [tableConfigs]="tableConfigs">
+<app-generic-table (changeEvent)="handleChangeEvent($event)" [formTemplate]="formTemplate"
+    (formTemplateEvent)="handleFormTemplateEvent($event)" [forcedChangeVal]="forcedChangeVal"
+    [tableConfigs]="tableConfigs">
     <ng-template #formTemplate pTemplate="content">
         <div [formGroup]="createOrUpdateForm" class="card p-fluid">
-            <div class="field">
-                <label htmlFor="Name">Name</label>
-                <input pInputText formControlName="name" type="text" />
+            <label htmlFor="Address">Address</label>
+            <span class="p-input-icon-left w-full">
+                <i class="pi pi-search"></i>
+                <input #searchBar type="text" pInputText placeholder="Search" class="w-full" />
+            </span>
+            <p-gmap [options]="options" [overlays]="overlays" [style]="{ width: '100%', 
+            height: '320px' }" (onMapClick)="overlayClicked($event)">
+            </p-gmap>
+            <div [formGroup]="addressForm">
+                <div class="field">
+                    <label htmlFor="Billboard Type">Longitude</label>
+                    <input pInputText formControlName="longitude" type="text" />
+                </div>
+                <div class="field">
+                    <label htmlFor="Billboard Type">Latitude</label>
+                    <input pInputText formControlName="latitude" type="text" />
+                </div>
             </div>
             <div class="field">
-                <label htmlFor="Email">Email</label>
-                <input pInputText formControlName="email" type="text" />
+                <label htmlFor="Billboard Type">Billboard Type</label>
+                <!-- <input pInputText formControlName="role" type="text" /> -->
+                <p-dropdown (onChange)="handleSelectEvent($event, 'type')" [options]="billboardTypes" placeholder="Select a Billboard Type" optionLabel="name" class="multiselect-custom" display="chip">
+                    <ng-template let-billboardType pTemplate="item">
+                        <div class="flex align-items-center">
+                            <span class="ml-2">{{ billboardType.name }}</span>
+                        </div>
+                    </ng-template>
+                </p-dropdown>
             </div>
             <div class="field">
-                <label htmlFor="Address">Phone</label>
-                <input pInputText formControlName="phone" type="text" />
+                <label htmlFor="Supplier">Supplier</label>
+                <!-- <input pInputText formControlName="role" type="text" /> -->
+                <p-dropdown (onChange)="handleSelectEvent($event, 'supplier')" [options]="suppliers" placeholder="Select a Supplier" optionLabel="name" class="multiselect-custom" display="chip">
+                    <ng-template let-supplier pTemplate="item">
+                        <div class="flex align-items-center">
+                            <span class="ml-2">{{ supplier.name }}</span>
+                        </div>
+                    </ng-template>
+                </p-dropdown>
+            </div>
+            <div class="field">
+                <label htmlFor="City">City</label>
+                <!-- <input pInputText formControlName="role" type="text" /> -->
+                <p-dropdown (onChange)="handleSelectEvent($event, 'city')" [options]="cities" placeholder="Select a City" optionLabel="name" class="multiselect-custom" display="chip">
+                    <ng-template let-city pTemplate="item">
+                        <div class="flex align-items-center">
+                            <span class="ml-2">{{ city.name }}</span>
+                        </div>
+                    </ng-template>
+                </p-dropdown>
+            </div>
+            <div class="field">
+                <label htmlFor="Billboard Number">Billboard Number</label>
+                <input formControlName="billboardNumber" pInputText type="number" />
+            </div>
+            <div class="field">
+                <label htmlFor="Total Size">Total Size</label>
+                <input formControlName="totalSize" pInputText type="number" />
             </div>
         </div>
     </ng-template>

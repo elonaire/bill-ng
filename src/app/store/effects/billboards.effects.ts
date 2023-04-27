@@ -21,4 +21,19 @@ export class BillboardsEffects {
       )
     )
   );
+
+  loadBillboards$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType('[Billboards] Load Billboards'),
+      mergeMap(() =>
+        this.apiService.getBillboards().pipe(
+          map((billboards) => ({
+            type: '[Billboards] Load Billboards Success',
+            payload: billboards,
+          })),
+          catchError(() => EMPTY)
+        )
+      )
+    )
+  );
 }
