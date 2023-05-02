@@ -5,8 +5,9 @@
             <p-toolbar styleClass="mb-4">
                 <ng-template pTemplate="left">
                     <div class="my-2">
-                        <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success ml-2" (click)="openNew()"></button>
-                        <button *ngIf="tableConfigs.showDelete" pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger" (click)="deleteSelectedItems()" [disabled]="!selectedItems || !selectedItems.length"></button>
+                        <!-- p-button-success -->
+                        <button pButton pRipple label="New" icon="pi pi-plus" class="ml-2" (click)="openNew()"></button>
+                        <!-- <button *ngIf="tableConfigs.showDelete" pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger" (click)="deleteSelectedItems()" [disabled]="!selectedItems || !selectedItems.length"></button> -->
                     </div>
                 </ng-template>
 
@@ -44,9 +45,9 @@
                 </ng-template>
                 <ng-template pTemplate="header">
                     <tr>
-                        <th style="width: 3rem">
+                        <!-- <th style="width: 3rem">
                             <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-                        </th>
+                        </th> -->
                         
                         <ng-container *ngFor="let column of columns">
                             <th *ngIf="column.isSortable else notSortableColumn" pSortableColumn="{{column.name}}">{{column.name}} <p-sortIcon field="{{column.name}}"></p-sortIcon></th>
@@ -59,26 +60,26 @@
                 </ng-template>
                 <ng-template pTemplate="body" let-row>
                     <tr>
-                        <td>
+                        <!-- <td>
                             <p-tableCheckbox [value]="row"></p-tableCheckbox>
-                        </td>
+                        </td> -->
                         <ng-container *ngFor="let column of columns">
                             <td *ngIf="column.name === 'Name'; else otherColumn" style="width: 14%; min-width: 10rem">
                                 <span class="p-column-title"></span>
-                                <a [routerLink]="['/supplier', row.id]">{{ row[column.prop] }}</a>
+                                <a [routerLink]="['/supplier', row.id]">{{ row[column.prop] || 'N/A' }}</a>
                             </td>
                             <ng-template #otherColumn>
                                 <td style="width: 14%; min-width: 10rem">
                                     <span class="p-column-title"></span>
-                                    {{ row[column.prop] }}
+                                    {{ row[column.prop] || 'N/A' }}
                                 </td>
                             </ng-template>
                         </ng-container>
                         
                         <td>
                             <div class="flex">
-                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success ml-2" (click)="editItem(row)"></button>
-                                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteItem(row)"></button>
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded bg-primary-reverse ml-2" (click)="editItem(row)"></button>
+                                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded bg-primary-reverse" (click)="deleteItem(row)"></button>
                             </div>
                         </td>
                     </tr>

@@ -8,7 +8,7 @@ import { loadSuppliers } from 'src/app/store/actions/suppliers.actions';
 import { StoreSelectors } from '../../suppliers/suppliers/suppliers.component';
 import { MutationType } from '../billboard-types/billboard-types.component';
 import * as selectors from '../../../../store/selectors';
-import { loadBillboardTypes, loadBillboards } from 'src/app/store/actions/billboards.actions';
+import { createBillboard, deleteBillboard, loadBillboardTypes, loadBillboards, updateBillboard } from 'src/app/store/actions/billboards.actions';
 
 declare var google: any;
 
@@ -76,6 +76,8 @@ export class BillboardsComponent implements OnInit, AfterContentInit {
     this.addressForm = this.fb.group({
       longitude: [{ value: 0, disabled: true}, Validators.required],
       latitude: [{ value: 0, disabled: true}, Validators.required],
+      formattedAddress: ['', Validators.required],
+      neighborhood: ['', Validators.required],
     });
     this.addBillboardForm = this.fb.group({
       address: [this.addressForm.value, Validators.required],
@@ -151,18 +153,20 @@ export class BillboardsComponent implements OnInit, AfterContentInit {
       });
       console.log('this.createOrUpdateForm.value', this.createOrUpdateForm.value);
       
-      this.apiService
-        .createBillboard(this.createOrUpdateForm.value)
-        .subscribe((res) => {
-          this.createOrUpdateForm.reset();
-          this.forcedChangeVal = new Date().getTime();
-        });
+      // this.apiService
+      //   .createBillboard(this.createOrUpdateForm.value)
+      //   .subscribe((res) => {
+      //     this.createOrUpdateForm.reset();
+      //     this.forcedChangeVal = new Date().getTime();
+      //   });
+      this.store.dispatch(createBillboard({ billboard: this.createOrUpdateForm.value }));
     } else {
-      this.apiService
-        .updateBillboard(this.createOrUpdateForm.value)
-        .subscribe((res) => {
-          this.forcedChangeVal = new Date().getTime();
-        });
+      // this.apiService
+      //   .updateBillboard(this.createOrUpdateForm.value)
+      //   .subscribe((res) => {
+      //     this.forcedChangeVal = new Date().getTime();
+      //   });
+      this.store.dispatch(updateBillboard({ billboard: this.createOrUpdateForm.value }));
     }
   }
 
@@ -176,11 +180,12 @@ export class BillboardsComponent implements OnInit, AfterContentInit {
       this.createOrUpdateForm = this.updateBillboardForm;
       this.createOrUpdateForm.patchValue(event.data as Supplier);
     } else if (event.mutationType === MutationType.DELETE) {
-      this.apiService
-        .deleteBillboard(event.data?.id as string)
-        .subscribe((res) => {
-          this.forcedChangeVal = new Date().getTime();
-        });
+      // this.apiService
+      //   .deleteBillboard(event.data?.id as string)
+      //   .subscribe((res) => {
+      //     this.forcedChangeVal = new Date().getTime();
+      //   });
+      this.store.dispatch(deleteBillboard({ billboardId: event.data?.id as string }));
     }
 
     if (this.createOrUpdateForm.valid) {
@@ -205,6 +210,7 @@ export class BillboardsComponent implements OnInit, AfterContentInit {
     console.log('handleSelectEvent', event);
     console.log('field', field);
     if (field === 'city') {
+      this.getSelectedPlaceDetails(event.value.place_id);
       this.createOrUpdateForm.patchValue({
         [field]: event.value.name,
       });
@@ -219,6 +225,16 @@ export class BillboardsComponent implements OnInit, AfterContentInit {
     this.apiService.getCitiesWithinRadius(radius, lat, lng).subscribe((res) => {
       console.log('getCitiesWithinRadius', res);
       this.cities = (res as any).results as any[];
+    });
+  }
+
+  getSelectedPlaceDetails(placeId: string) {
+    this.apiService.getSelectedPlaceDetails(placeId).subscribe((res) => {
+      console.log('getSelectedPlaceDetails', res);
+      this.addressForm.patchValue({
+        formattedAddress: (res as any).result.formatted_address,
+        neighborhood: (res as any).result.vicinity,
+      });
     });
   }
 }

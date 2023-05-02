@@ -5,7 +5,7 @@ import { FormMutationInfo } from 'src/app/billboardz/components/crud/crud.compon
 import { ApiService } from 'src/app/billboardz/services/api.service';
 import { StoreSelectors } from '../../suppliers/suppliers/suppliers.component';
 import { Store } from '@ngrx/store';
-import { loadBillboardTypes } from 'src/app/store/actions/billboards.actions';
+import { createBillboardType, deleteBillboardType, loadBillboardTypes, updateBillboardType } from 'src/app/store/actions/billboards.actions';
 
 export enum MutationType {
   CREATE = 'create',
@@ -24,8 +24,8 @@ export class BillboardTypesComponent {
       tableName: 'Billboard Types',
       columns: this.supplierTableColumns,
       showDelete: true,
-      showExport: true,
-      showImport: true,
+      showExport: false,
+      showImport: false,
       wrapInCard: true,
       requestParams: {
         storeSelector: StoreSelectors.BILLBOARD_TYPES,
@@ -65,18 +65,21 @@ export class BillboardTypesComponent {
 
   saveSupplier(opType: MutationType) {
     if (opType === MutationType.CREATE) {
-      this.apiService
-        .createBillboardType(this.addSupplierForm.value)
-        .subscribe((res) => {
-          this.addSupplierForm.reset();
-          this.forcedChangeVal = new Date().getTime();
-        });
+      // this.apiService
+      //   .createBillboardType(this.addSupplierForm.value)
+      //   .subscribe((res) => {
+      //     this.addSupplierForm.reset();
+      //     this.forcedChangeVal = new Date().getTime();
+      //   });
+      this.store.dispatch(createBillboardType({ billboardType: this.createOrUpdateForm.value }));
+      this.addSupplierForm.reset();
     } else {
-      this.apiService
-        .updateBillboardType(this.updateSupplierForm.value)
-        .subscribe((res) => {
-          this.forcedChangeVal = new Date().getTime();
-        });
+      // this.apiService
+      //   .updateBillboardType(this.updateSupplierForm.value)
+      //   .subscribe((res) => {
+      //     this.forcedChangeVal = new Date().getTime();
+      //   });
+      this.store.dispatch(updateBillboardType({ billboardType: this.createOrUpdateForm.value }));
     }
   }
 
@@ -88,13 +91,15 @@ export class BillboardTypesComponent {
       this.createOrUpdateForm = this.addSupplierForm;
     } else if (event.mutationType === MutationType.UPDATE) {
       this.createOrUpdateForm = this.updateSupplierForm;
+      // TODO: this is not working
       this.createOrUpdateForm.patchValue(event.data as Supplier);
       console.log('this.createOrUpdateForm', this.createOrUpdateForm.value);
       
     } else if (event.mutationType === MutationType.DELETE) {
-      this.apiService.deleteBillboardType(event.data?.id as string).subscribe((res) => {
-        this.forcedChangeVal = new Date().getTime();
-      });
+      // this.apiService.deleteBillboardType(event.data?.id as string).subscribe((res) => {
+      //   this.forcedChangeVal = new Date().getTime();
+      // });
+      this.store.dispatch(deleteBillboardType({ billboardTypeId: event.data?.id as string }));
     }
 
     if (this.createOrUpdateForm.valid) {

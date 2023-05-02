@@ -11,7 +11,7 @@ import { FormMutationInfo } from 'src/app/billboardz/components/crud/crud.compon
 import { ApiService } from 'src/app/billboardz/services/api.service';
 import { StoreSelectors } from '../suppliers/suppliers.component';
 import { Store } from '@ngrx/store';
-import { loadSupplierContacts } from 'src/app/store/actions/suppliers.actions';
+import { createSupplierContact, loadSupplierContacts } from 'src/app/store/actions/suppliers.actions';
 
 export enum MutationType {
   CREATE = 'create',
@@ -89,16 +89,23 @@ export class SupplierContactsComponent {
   saveSupplier(opType: MutationType) {
     if (opType === MutationType.CREATE) {
       const { name, email, phone } = this.createOrUpdateForm.value;
-      this.apiService
-        .createSupplierContact(
-          { name, email, phone },
-          this.currentSupplierId,
-          this.createOrUpdateForm.value.role
-        )
-        .subscribe((res) => {
-          this.createOrUpdateForm.reset();
-          this.forcedChangeVal = new Date().getTime();
-        });
+      // this.apiService
+      //   .createSupplierContact(
+      //     { name, email, phone },
+      //     this.currentSupplierId,
+      //     this.createOrUpdateForm.value.role
+      //   )
+      //   .subscribe((res) => {
+      //     this.createOrUpdateForm.reset();
+      //     this.forcedChangeVal = new Date().getTime();
+      //   });
+      this.store.dispatch(
+        createSupplierContact({
+          supplierContact: { name, email, phone },
+          supplierId: this.currentSupplierId,
+          supplierContactRoleIds: this.createOrUpdateForm.value.role,
+        })
+      );
     } else {
       this.apiService
         .updateSupplierContact(this.createOrUpdateForm.value)
@@ -114,6 +121,7 @@ export class SupplierContactsComponent {
     if (event.mutationType === MutationType.CREATE) {
       this.createOrUpdateForm = this.addSupplierContactForm;
     } else if (event.mutationType === MutationType.UPDATE) {
+      // TODO: this is not working
       this.createOrUpdateForm = this.updateSupplierContactForm;
       this.createOrUpdateForm.patchValue(event.data as Supplier);
     } else if (event.mutationType === MutationType.DELETE) {

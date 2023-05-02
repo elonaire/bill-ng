@@ -37,6 +37,7 @@ export const UPDATE_SUPPLIER = gql`
 export const DELETE_SUPPLIER = gql`
   mutation deleteSupplier($id: String!) {
     deleteSupplier(id: $id) {
+      id
       name
       email
       address
@@ -157,6 +158,7 @@ export const GET_BILLBOARD_TYPES = gql`
 export const CREATE_BILLBOARD_TYPE = gql`
   mutation createBillboardType($billboardType: BillboardTypeInput!) {
     createBillboardType(billboardType: $billboardType) {
+      id
       name
     }
   }
@@ -165,6 +167,7 @@ export const CREATE_BILLBOARD_TYPE = gql`
 export const UPDATE_BILLBOARD_TYPE = gql`
   mutation updateBillboardType($billboardType: BillboardTypeInput!) {
     updateBillboardType(billboardType: $billboardType) {
+      id
       name
     }
   }
@@ -173,6 +176,7 @@ export const UPDATE_BILLBOARD_TYPE = gql`
 export const DELETE_BILLBOARD_TYPE = gql`
   mutation deleteBillboardType($id: String!) {
     deleteBillboardType(id: $id) {
+      id
       name
     }
   }

@@ -1,8 +1,13 @@
-$primaryColor: #464df2 !default;
-$primaryLightColor: #a3a6f9 !default;
-$primaryLighterColor: rgba($primaryLightColor, 0.1);
-$primaryDarkColor: #221ed9 !default;
-$primaryDarkerColor: #1222b9 !default;
+// $primaryColor: #464df2 !default;
+$primaryColor: #9C27B0 !default;
+// $primaryLightColor: #a3a6f9 !default;
+$primaryLightColor: lighten($primaryColor, 20%) !default;
+// $primaryLighterColor: rgba($primaryLightColor, 0.1);
+$primaryLighterColor: lighten($primaryColor, 40%) !default;
+// $primaryDarkColor: #221ed9 !default;
+$primaryDarkColor: darken($primaryColor, 20%) !default;
+// $primaryDarkerColor: #1222b9 !default;
+$primaryDarkerColor: darken($primaryColor, 40%) !default;
 $primaryTextColor: #ffffff !default;
 
 $highlightBg: $primaryLighterColor !default;
