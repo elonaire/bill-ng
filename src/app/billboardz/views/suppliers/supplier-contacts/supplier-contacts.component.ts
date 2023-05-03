@@ -11,7 +11,8 @@ import { FormMutationInfo } from 'src/app/billboardz/components/crud/crud.compon
 import { ApiService } from 'src/app/billboardz/services/api.service';
 import { StoreSelectors } from '../suppliers/suppliers.component';
 import { Store } from '@ngrx/store';
-import { createSupplierContact, loadSupplierContacts } from 'src/app/store/actions/suppliers.actions';
+import { createSupplierContact, loadSupplierContacts, updateSupplierContact } from 'src/app/store/actions/suppliers.actions';
+import { deleteSupplierContact } from 'src/app/store/actions/suppliers.actions';
 
 export enum MutationType {
   CREATE = 'create',
@@ -89,16 +90,6 @@ export class SupplierContactsComponent {
   saveSupplier(opType: MutationType) {
     if (opType === MutationType.CREATE) {
       const { name, email, phone } = this.createOrUpdateForm.value;
-      // this.apiService
-      //   .createSupplierContact(
-      //     { name, email, phone },
-      //     this.currentSupplierId,
-      //     this.createOrUpdateForm.value.role
-      //   )
-      //   .subscribe((res) => {
-      //     this.createOrUpdateForm.reset();
-      //     this.forcedChangeVal = new Date().getTime();
-      //   });
       this.store.dispatch(
         createSupplierContact({
           supplierContact: { name, email, phone },
@@ -106,12 +97,29 @@ export class SupplierContactsComponent {
           supplierContactRoleIds: this.createOrUpdateForm.value.role,
         })
       );
+      this.createOrUpdateForm.reset();
     } else {
-      this.apiService
-        .updateSupplierContact(this.createOrUpdateForm.value)
-        .subscribe((res) => {
-          this.forcedChangeVal = new Date().getTime();
-        });
+      const roles = this.createOrUpdateForm.value.role.map(
+        (roleS: any) => {
+          const { id, role } = roleS;
+          return {
+            role,
+            _id: id,
+          }
+        }
+      );
+      this.createOrUpdateForm.patchValue({
+        role: roles,
+      });
+      const {id, ...rest} = this.createOrUpdateForm.value;
+      this.store.dispatch(
+        updateSupplierContact({
+          supplierContact: {
+            _id: id,
+            ...rest,
+          },
+        })
+      );
     }
   }
 
@@ -121,15 +129,16 @@ export class SupplierContactsComponent {
     if (event.mutationType === MutationType.CREATE) {
       this.createOrUpdateForm = this.addSupplierContactForm;
     } else if (event.mutationType === MutationType.UPDATE) {
-      // TODO: this is not working
       this.createOrUpdateForm = this.updateSupplierContactForm;
-      this.createOrUpdateForm.patchValue(event.data as Supplier);
+      if (!this.createOrUpdateForm.valid) {
+        this.createOrUpdateForm.patchValue(event.data as Supplier);
+      }
     } else if (event.mutationType === MutationType.DELETE) {
-      this.apiService
-        .deleteSupplierContact(event.data?.id as string)
-        .subscribe((res) => {
-          this.forcedChangeVal = new Date().getTime();
-        });
+      this.store.dispatch(
+        deleteSupplierContact({
+          supplierContactId: event.data?.id as string,
+        })
+      );
     }
 
     if (this.createOrUpdateForm.valid) {

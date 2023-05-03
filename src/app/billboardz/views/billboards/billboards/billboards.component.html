@@ -24,7 +24,8 @@
             <div class="field">
                 <label htmlFor="Billboard Type">Billboard Type</label>
                 <!-- <input pInputText formControlName="role" type="text" /> -->
-                <p-dropdown (onChange)="handleSelectEvent($event, 'type')" [options]="billboardTypes" placeholder="Select a Billboard Type" optionLabel="name" class="multiselect-custom" display="chip">
+                <p-dropdown (onChange)="handleSelectEvent($event, 'type')" [options]="billboardTypes"
+                    placeholder="Select a Billboard Type" optionLabel="name" class="multiselect-custom" display="chip">
                     <ng-template let-billboardType pTemplate="item">
                         <div class="flex align-items-center">
                             <span class="ml-2">{{ billboardType.name }}</span>
@@ -35,7 +36,8 @@
             <div class="field">
                 <label htmlFor="Supplier">Supplier</label>
                 <!-- <input pInputText formControlName="role" type="text" /> -->
-                <p-dropdown (onChange)="handleSelectEvent($event, 'supplier')" [options]="suppliers" placeholder="Select a Supplier" optionLabel="name" class="multiselect-custom" display="chip">
+                <p-dropdown (onChange)="handleSelectEvent($event, 'supplier')" [options]="suppliers"
+                    placeholder="Select a Supplier" optionLabel="name" class="multiselect-custom" display="chip">
                     <ng-template let-supplier pTemplate="item">
                         <div class="flex align-items-center">
                             <span class="ml-2">{{ supplier.name }}</span>
@@ -46,7 +48,8 @@
             <div class="field">
                 <label htmlFor="City">City</label>
                 <!-- <input pInputText formControlName="role" type="text" /> -->
-                <p-dropdown (onChange)="handleSelectEvent($event, 'city')" [options]="cities" placeholder="Select a City" optionLabel="name" class="multiselect-custom" display="chip">
+                <p-dropdown (onChange)="handleSelectEvent($event, 'city')" [options]="cities"
+                    placeholder="Select a City" optionLabel="name" class="multiselect-custom" display="chip">
                     <ng-template let-city pTemplate="item">
                         <div class="flex align-items-center">
                             <span class="ml-2">{{ city.name }}</span>
@@ -61,6 +64,78 @@
             <div class="field">
                 <label htmlFor="Total Size">Total Size</label>
                 <input formControlName="totalSize" pInputText type="number" />
+            </div>
+
+            <div class="field">
+                <label htmlFor="Width">Width</label>
+                <input formControlName="width" pInputText type="number" />
+            </div>
+
+            <div class="field">
+                <label htmlFor="Height">Height</label>
+                <input formControlName="height" pInputText type="number" />
+            </div>
+
+            <div class="field">
+                <label htmlFor="Sub Type">Sub Type</label>
+                <input formControlName="subType" pInputText type="text" />
+            </div>
+
+            <div class="field">
+                <label htmlFor="Side">Side</label>
+                <input formControlName="side" pInputText type="text" />
+            </div>
+
+            <div class="field">
+                <label htmlFor="Premium Description">Premium Description</label>
+                <input formControlName="premiumDescription" pInputText type="text" />
+            </div>
+
+            <div class="field">
+                <label htmlFor="Orientation">Orientation</label>
+                <input formControlName="orientation" pInputText type="text" />
+            </div>
+
+            <div class="field">
+                <label htmlFor="Is Active">Is Active</label>
+                <input formControlName="isActive" pInputText type="text" />
+            </div>
+
+            <div class="field">
+                <label htmlFor="Price">Price</label>
+                <input formControlName="price" pInputText type="number" />
+            </div>
+
+            <div class="field">
+                <label htmlFor="Views">Views</label>
+                <input formControlName="views" pInputText type="number" />
+            </div>
+
+            <div class="field">
+                <label htmlFor="Rotation">Rotation</label>
+                <input formControlName="rotation" pInputText type="number" />
+            </div>
+
+            <div class="field">
+                <label htmlFor="Image 1">Image Uploads</label>
+                <p-dropdown (onChange)="handleSelectImageToUpload($event)" [options]="imagesIndex" placeholder="Select Image"
+                    optionLabel="" class="multiselect-custom" display="chip">
+                    <ng-template let-image pTemplate="item">
+                        <div class="flex align-items-center">
+                            <span class="ml-2">{{ image }}</span>
+                        </div>
+                    </ng-template>
+                </p-dropdown>
+
+                <h5>Selected Files</h5>
+                <p-fileUpload name="demo[]" [showCancelButton]="false" [fileLimit]="8" (onSelect)="handleFileSelect($event)" (onUpload)="onUpload($event)" [multiple]="true" accept="image/*"
+                    [maxFileSize]="1000000">
+                    <!-- <ng-template pTemplate="content">
+                        <ul *ngIf="uploadedFiles.length">
+                            <li *ngFor="let file of uploadedFiles">{{ file.name }} - {{ file.size }} bytes</li>
+                        </ul>
+                    </ng-template> -->
+                </p-fileUpload>
             </div>
         </div>
     </ng-template>

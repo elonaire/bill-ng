@@ -35,7 +35,7 @@ export class CitiesComponent {
   }
 
   supplierTableColumns: TableColumn[] = [
-    { name: 'ID', prop: 'id', isSortable: true },
+    // { name: 'ID', prop: 'id', isSortable: true },
     { name: 'Name', prop: 'name', isSortable: true },
     { name: 'Population', prop: 'population', isSortable: true },
     { name: 'Men', prop: 'men', isSortable: true },

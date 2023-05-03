@@ -91,22 +91,11 @@ export class SuppliersComponent implements OnInit {
 
   saveSupplier(opType: MutationType) {
     if (opType === MutationType.CREATE) {
-      // this.apiService
-      //   .createSupplier(this.addSupplierForm.value)
-      //   .subscribe((res) => {
-      //     this.addSupplierForm.reset();
-      //     this.forcedChangeVal = new Date().getTime();
-      //   });
       this.store.dispatch(
         createSupplier({ supplier: this.createOrUpdateForm.value })
       );
       this.addSupplierForm.reset();
     } else {
-      // this.apiService
-      //   .updateSupplier(this.updateSupplierForm.value)
-      //   .subscribe((res) => {
-      //     this.forcedChangeVal = new Date().getTime();
-      //   });
       this.store.dispatch(
         updateSupplier({ supplier: this.createOrUpdateForm.value })
       );
@@ -121,14 +110,10 @@ export class SuppliersComponent implements OnInit {
       this.createOrUpdateForm = this.addSupplierForm;
     } else if (event.mutationType === MutationType.UPDATE) {
       this.createOrUpdateForm = this.updateSupplierForm;
-      // TODO: this is not working
-      this.createOrUpdateForm.patchValue(event.data as Supplier);
+      if (!this.createOrUpdateForm.valid) {
+        this.createOrUpdateForm.patchValue(event.data as Supplier);
+      }
     } else if (event.mutationType === MutationType.DELETE) {
-      // this.apiService
-      //   .deleteSupplier(event.data?.id as string)
-      //   .subscribe((res) => {
-      //     this.forcedChangeVal = new Date().getTime();
-      //   });
       this.store.dispatch(
         deleteSupplier({ supplierId: event.data?.id as string })
       );

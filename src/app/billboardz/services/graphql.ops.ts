@@ -15,6 +15,7 @@ export const GET_SUPPLIERS = gql`
 export const CREATE_SUPPLIER = gql`
   mutation createSupplier($supplier: SupplierInput!) {
     createSupplier(supplier: $supplier) {
+      id
       name
       email
       address
@@ -26,6 +27,7 @@ export const CREATE_SUPPLIER = gql`
 export const UPDATE_SUPPLIER = gql`
   mutation updateSupplier($supplier: SupplierInput!) {
     updateSupplier(supplier: $supplier) {
+      id
       name
       email
       address
@@ -339,6 +341,8 @@ export const GET_BILLBOARDS = gql`
       address {
         longitude
         latitude
+        formattedAddress
+        neighborhood
       }
       billboardNumber
       totalSize
@@ -346,6 +350,24 @@ export const GET_BILLBOARDS = gql`
         id
         name
       }
+      width
+      height
+      subType
+      side
+      premiumDescription
+      orientation
+      isActive
+      price
+      views
+      rotation
+      image1
+      image2
+      image3
+      image4
+      image5
+      image6
+      image7
+      image8
     }
   }
 `;

@@ -12,6 +12,7 @@ import { CrudModule } from '../../components/crud/crud.module';
 import { GMapModule } from 'primeng/gmap';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { DropdownModule } from 'primeng/dropdown';
+import { FileUploadModule } from 'primeng/fileupload';
 
 
 @NgModule({
@@ -29,7 +30,8 @@ import { DropdownModule } from 'primeng/dropdown';
     InputTextModule,
     GMapModule,
     GoogleMapsModule,
-    DropdownModule
+    DropdownModule,
+    FileUploadModule
   ]
 })
 export class BillboardsModule { }

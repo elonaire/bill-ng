@@ -197,7 +197,7 @@ export class CrudComponent implements OnInit {
       this.messageService.add({
         severity: 'success',
         summary: 'Successful',
-        detail: 'Products Uploaded',
+        detail: 'Records Uploaded',
         life: 3000,
       });
     }

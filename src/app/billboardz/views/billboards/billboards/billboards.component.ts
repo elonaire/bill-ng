@@ -1,23 +1,42 @@
-import { AfterContentInit, Component, ContentChild, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterContentInit,
+  Component,
+  ContentChild,
+  ElementRef,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { AppState, TableColumn, GenericTableConfigs, Supplier } from 'src/app/@types/billboardz';
+import {
+  AppState,
+  TableColumn,
+  GenericTableConfigs,
+  Supplier,
+} from 'src/app/@types/billboardz';
 import { FormMutationInfo } from 'src/app/billboardz/components/crud/crud.component';
 import { ApiService } from 'src/app/billboardz/services/api.service';
 import { loadSuppliers } from 'src/app/store/actions/suppliers.actions';
 import { StoreSelectors } from '../../suppliers/suppliers/suppliers.component';
 import { MutationType } from '../billboard-types/billboard-types.component';
 import * as selectors from '../../../../store/selectors';
-import { createBillboard, deleteBillboard, loadBillboardTypes, loadBillboards, updateBillboard } from 'src/app/store/actions/billboards.actions';
+import {
+  createBillboard,
+  deleteBillboard,
+  loadBillboardTypes,
+  loadBillboards,
+  updateBillboard,
+} from 'src/app/store/actions/billboards.actions';
 
 declare var google: any;
 
 @Component({
   selector: 'app-billboards',
   templateUrl: './billboards.component.html',
-  styleUrls: ['./billboards.component.scss']
+  styleUrls: ['./billboards.component.scss'],
 })
 export class BillboardsComponent implements OnInit, AfterContentInit {
+  selectedImageToUpload: any;
   constructor(
     private fb: FormBuilder,
     private apiService: ApiService,
@@ -39,12 +58,35 @@ export class BillboardsComponent implements OnInit, AfterContentInit {
 
   @ViewChild('searchBar', { static: false }) searchBar!: ElementRef;
   supplierTableColumns: TableColumn[] = [
-    { name: 'Address', prop: 'name', isSortable: true },
+    { name: 'Address', prop: 'formattedAddress', isSortable: true },
     { name: 'Type', prop: 'billboardTypeName', isSortable: true },
     { name: 'City', prop: 'cityName', isSortable: true },
     { name: 'Supplier', prop: 'supplierName', isSortable: true },
     { name: 'Total Size', prop: 'totalSize', isSortable: true },
     { name: 'Billboard Number', prop: 'billboardNumber', isSortable: true },
+    // width, height, subType, side, premiumDescription, orientation, isActive, price, views, rotation, image1, image2, image3, image4, image5, image6, image7, image8
+    { name: 'Width', prop: 'width', isSortable: true },
+    { name: 'Height', prop: 'height', isSortable: true },
+    { name: 'Sub type', prop: 'subType', isSortable: true },
+    { name: 'Side', prop: 'side', isSortable: true },
+    {
+      name: 'Premium Description',
+      prop: 'premiumDescription',
+      isSortable: true,
+    },
+    { name: 'Orientation', prop: 'orientation', isSortable: true },
+    { name: 'Status', prop: 'isActive', isSortable: true },
+    { name: 'Price', prop: 'price', isSortable: true },
+    { name: 'Views', prop: 'views', isSortable: true },
+    { name: 'Rotation', prop: 'rotation', isSortable: true },
+    { name: 'Image 1', prop: 'image1', isSortable: true },
+    { name: 'Image 2', prop: 'image2', isSortable: true },
+    { name: 'Image 3', prop: 'image3', isSortable: true },
+    { name: 'Image 4', prop: 'image4', isSortable: true },
+    { name: 'Image 5', prop: 'image5', isSortable: true },
+    { name: 'Image 6', prop: 'image6', isSortable: true },
+    { name: 'Image 7', prop: 'image7', isSortable: true },
+    { name: 'Image 8', prop: 'image8', isSortable: true },
   ];
   tableConfigs: GenericTableConfigs;
   forcedChangeVal: any;
@@ -60,6 +102,17 @@ export class BillboardsComponent implements OnInit, AfterContentInit {
   cities!: any[];
   suppliers!: any[];
   billboardTypes!: any[];
+  uploadedFiles: any[] = [];
+  imagesIndex = [
+    'image1',
+    'image2',
+    'image3',
+    'image4',
+    'image5',
+    'image6',
+    'image7',
+    'image8',
+  ];
 
   ngOnInit(): void {
     this.options = {
@@ -74,8 +127,8 @@ export class BillboardsComponent implements OnInit, AfterContentInit {
     this.store.dispatch(loadSuppliers());
     this.store.dispatch(loadBillboardTypes());
     this.addressForm = this.fb.group({
-      longitude: [{ value: 0, disabled: true}, Validators.required],
-      latitude: [{ value: 0, disabled: true}, Validators.required],
+      longitude: [{ value: 0, disabled: true }, Validators.required],
+      latitude: [{ value: 0, disabled: true }, Validators.required],
       formattedAddress: ['', Validators.required],
       neighborhood: ['', Validators.required],
     });
@@ -86,7 +139,24 @@ export class BillboardsComponent implements OnInit, AfterContentInit {
       supplier: ['', Validators.required],
       totalSize: ['', Validators.required],
       billboardNumber: ['', Validators.required],
-
+      width: ['', Validators.required],
+      height: ['', Validators.required],
+      subType: ['', Validators.required],
+      side: ['', Validators.required],
+      premiumDescription: ['', Validators.required],
+      orientation: ['', Validators.required],
+      isActive: ['', Validators.required],
+      price: ['', Validators.required],
+      views: ['', Validators.required],
+      rotation: ['', Validators.required],
+      image1: [''],
+      image2: [''],
+      image3: [''],
+      image4: [''],
+      image5: [''],
+      image6: [''],
+      image7: [''],
+      image8: [''],
     });
 
     this.updateBillboardForm = this.fb.group({
@@ -97,6 +167,24 @@ export class BillboardsComponent implements OnInit, AfterContentInit {
       supplier: ['', Validators.required],
       totalSize: ['', Validators.required],
       billboardNumber: ['', Validators.required],
+      width: ['', Validators.required],
+      height: ['', Validators.required],
+      subType: ['', Validators.required],
+      side: ['', Validators.required],
+      premiumDescription: ['', Validators.required],
+      orientation: ['', Validators.required],
+      isActive: ['', Validators.required],
+      price: ['', Validators.required],
+      views: ['', Validators.required],
+      rotation: ['', Validators.required],
+      image1: [''],
+      image2: [''],
+      image3: [''],
+      image4: [''],
+      image5: [''],
+      image6: [''],
+      image7: [''],
+      image8: [''],
     });
 
     this.createOrUpdateForm = this.addBillboardForm;
@@ -113,18 +201,16 @@ export class BillboardsComponent implements OnInit, AfterContentInit {
     const autocomplete = new google.maps.places.Autocomplete(input);
 
     console.log('autocomplete', autocomplete);
-    
 
     autocomplete.addListener('place_changed', () => {
       const place = autocomplete.getPlace();
       console.log('place', place);
-      
     });
   }
 
   overlayClicked(event: any) {
     console.log('event', event);
-    
+
     console.log('overlayClicked', event.latLng.lat(), event.latLng.lng());
     this.addressForm.patchValue({
       longitude: event.latLng.lng(),
@@ -133,8 +219,8 @@ export class BillboardsComponent implements OnInit, AfterContentInit {
 
     this.overlays = [
       new google.maps.Marker({
-          position: { lat: event.latLng.lat(), lng: event.latLng.lng() },
-          title: 'Billboard',
+        position: { lat: event.latLng.lat(), lng: event.latLng.lng() },
+        title: 'Billboard',
       }),
     ];
 
@@ -151,22 +237,18 @@ export class BillboardsComponent implements OnInit, AfterContentInit {
       this.createOrUpdateForm.patchValue({
         address: this.addressForm.value,
       });
-      console.log('this.createOrUpdateForm.value', this.createOrUpdateForm.value);
-      
-      // this.apiService
-      //   .createBillboard(this.createOrUpdateForm.value)
-      //   .subscribe((res) => {
-      //     this.createOrUpdateForm.reset();
-      //     this.forcedChangeVal = new Date().getTime();
-      //   });
-      this.store.dispatch(createBillboard({ billboard: this.createOrUpdateForm.value }));
+      console.log(
+        'this.createOrUpdateForm.value',
+        this.createOrUpdateForm.value
+      );
+
+      this.store.dispatch(
+        createBillboard({ billboard: this.createOrUpdateForm.value })
+      );
     } else {
-      // this.apiService
-      //   .updateBillboard(this.createOrUpdateForm.value)
-      //   .subscribe((res) => {
-      //     this.forcedChangeVal = new Date().getTime();
-      //   });
-      this.store.dispatch(updateBillboard({ billboard: this.createOrUpdateForm.value }));
+      this.store.dispatch(
+        updateBillboard({ billboard: this.createOrUpdateForm.value })
+      );
     }
   }
 
@@ -178,14 +260,13 @@ export class BillboardsComponent implements OnInit, AfterContentInit {
       this.createOrUpdateForm = this.addBillboardForm;
     } else if (event.mutationType === MutationType.UPDATE) {
       this.createOrUpdateForm = this.updateBillboardForm;
-      this.createOrUpdateForm.patchValue(event.data as Supplier);
+      if (!this.createOrUpdateForm.valid) {
+        this.createOrUpdateForm.patchValue(event.data as Supplier);
+      }
     } else if (event.mutationType === MutationType.DELETE) {
-      // this.apiService
-      //   .deleteBillboard(event.data?.id as string)
-      //   .subscribe((res) => {
-      //     this.forcedChangeVal = new Date().getTime();
-      //   });
-      this.store.dispatch(deleteBillboard({ billboardId: event.data?.id as string }));
+      this.store.dispatch(
+        deleteBillboard({ billboardId: event.data?.id as string })
+      );
     }
 
     if (this.createOrUpdateForm.valid) {
@@ -236,5 +317,19 @@ export class BillboardsComponent implements OnInit, AfterContentInit {
         neighborhood: (res as any).result.vicinity,
       });
     });
+  }
+
+  handleFileSelect(event: any) {
+    console.log('handleFileSelect', event);
+    // this.uploadedFiles = event.currentFiles;
+  }
+
+  onUpload(event: any) {
+    console.log('onUpload', event);
+  }
+
+  handleSelectImageToUpload(event: any) {
+    console.log('handleSelectImageToUpload', event);
+    this.selectedImageToUpload = event;
   }
 }

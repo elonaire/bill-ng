@@ -35,8 +35,10 @@ export class BillboardTypesComponent {
   }
 
   supplierTableColumns: TableColumn[] = [
-    { name: 'ID', prop: 'id', isSortable: true },
+    // { name: 'ID', prop: 'id', isSortable: true },
     { name: 'Name', prop: 'name', isSortable: true },
+    { name: 'Billboard Count', prop: 'billboardCount', isSortable: true },
+    { name: 'City Count', prop: 'cityCount', isSortable: true },
   ];
   tableConfigs: GenericTableConfigs;
   forcedChangeVal: any;
@@ -65,20 +67,9 @@ export class BillboardTypesComponent {
 
   saveSupplier(opType: MutationType) {
     if (opType === MutationType.CREATE) {
-      // this.apiService
-      //   .createBillboardType(this.addSupplierForm.value)
-      //   .subscribe((res) => {
-      //     this.addSupplierForm.reset();
-      //     this.forcedChangeVal = new Date().getTime();
-      //   });
       this.store.dispatch(createBillboardType({ billboardType: this.createOrUpdateForm.value }));
       this.addSupplierForm.reset();
     } else {
-      // this.apiService
-      //   .updateBillboardType(this.updateSupplierForm.value)
-      //   .subscribe((res) => {
-      //     this.forcedChangeVal = new Date().getTime();
-      //   });
       this.store.dispatch(updateBillboardType({ billboardType: this.createOrUpdateForm.value }));
     }
   }
@@ -91,14 +82,10 @@ export class BillboardTypesComponent {
       this.createOrUpdateForm = this.addSupplierForm;
     } else if (event.mutationType === MutationType.UPDATE) {
       this.createOrUpdateForm = this.updateSupplierForm;
-      // TODO: this is not working
-      this.createOrUpdateForm.patchValue(event.data as Supplier);
-      console.log('this.createOrUpdateForm', this.createOrUpdateForm.value);
-      
+      if (!this.createOrUpdateForm.valid) {
+        this.createOrUpdateForm.patchValue(event.data as Supplier);
+      }
     } else if (event.mutationType === MutationType.DELETE) {
-      // this.apiService.deleteBillboardType(event.data?.id as string).subscribe((res) => {
-      //   this.forcedChangeVal = new Date().getTime();
-      // });
       this.store.dispatch(deleteBillboardType({ billboardTypeId: event.data?.id as string }));
     }
 
