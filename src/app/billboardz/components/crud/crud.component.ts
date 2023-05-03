@@ -44,6 +44,7 @@ export class CrudComponent implements OnInit {
   @Input() forcedChangeVal: any;
   @Input() formTemplate!: TemplateRef<any>;
   @Output() formTemplateEvent = new EventEmitter<FormMutationInfo>();
+  fileData: FormData = new FormData();
 
   data: Supplier[] = [];
   columns: TableColumn[] = [];
@@ -187,7 +188,19 @@ export class CrudComponent implements OnInit {
     table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
   }
 
-  // get MutationType() {
-  //   return MutationType;
-  // }
+  uploadCSV(event: any) {
+    console.log('event', event);
+    this.fileData.append('file', event.currentFiles[0]);
+
+    this.apiService.uploadCSV(this.fileData).subscribe((res) => {
+      console.log('res', res);
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Successful',
+        detail: 'Products Uploaded',
+        life: 3000,
+      });
+    }
+    );
+  }
 }

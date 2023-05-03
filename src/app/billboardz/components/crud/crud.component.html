@@ -12,7 +12,7 @@
                 </ng-template>
 
                 <ng-template pTemplate="right">
-                    <p-fileUpload *ngIf="tableConfigs.showImport" mode="basic" accept="image/*" [maxFileSize]="1000000" label="Import" chooseLabel="Import" class="ml-2 inline-block"></p-fileUpload>
+                    <p-fileUpload *ngIf="tableConfigs.showImport" mode="basic" accept=".csv" [maxFileSize]="1000000" label="Import" chooseLabel="Import" (onSelect)="uploadCSV($event)" class="ml-2 inline-block"></p-fileUpload>
                     <button *ngIf="tableConfigs.showExport" pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help" (click)="dt.exportCSV()"></button>
                 </ng-template>
             </p-toolbar>

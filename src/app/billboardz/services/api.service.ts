@@ -242,4 +242,8 @@ export class ApiService {
       `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=adr_address,address_components,formatted_address,vicinity&key=AIzaSyBi2bAqDJmx3gLWUyB3M7UwShJurO4hEDs`
     );
   }
+
+  uploadCSV(file: FormData) {
+    return this.http.post('http://localhost:3000/file-upload/upload', file);
+  }
 }
