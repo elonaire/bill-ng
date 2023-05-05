@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { BillboardzRoutingModule } from './billboardz-routing.module';
-import { AppLayoutModule } from '../layout/app.layout.module';
 
 
 @NgModule({
@@ -10,7 +9,6 @@ import { AppLayoutModule } from '../layout/app.layout.module';
   imports: [
     CommonModule,
     BillboardzRoutingModule,
-    // AppLayoutModule
   ]
 })
 export class BillboardzModule { }

@@ -1,18 +1,19 @@
 <div class="grid">
     <div class="col-12">
-        <div class="card px-6 py-6">
+        <div class="{{tableConfigs.wrapInCard ? 'card' : ''}} px-6 py-6">
             <p-toast></p-toast>
             <p-toolbar styleClass="mb-4">
                 <ng-template pTemplate="left">
                     <div class="my-2">
-                        <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success ml-2" (click)="openNew()"></button>
-                        <button pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger" (click)="deleteSelectedProducts()" [disabled]="!selectedProducts || !selectedProducts.length"></button>
+                        <!-- p-button-success -->
+                        <button pButton pRipple label="New" icon="pi pi-plus" class="ml-2" (click)="openNew()"></button>
+                        <!-- <button *ngIf="tableConfigs.showDelete" pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger" (click)="deleteSelectedItems()" [disabled]="!selectedItems || !selectedItems.length"></button> -->
                     </div>
                 </ng-template>
 
                 <ng-template pTemplate="right">
-                    <p-fileUpload mode="basic" accept="image/*" [maxFileSize]="1000000" label="Import" chooseLabel="Import" class="ml-2 inline-block"></p-fileUpload>
-                    <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help" (click)="dt.exportCSV()"></button>
+                    <p-fileUpload *ngIf="tableConfigs.showImport" mode="basic" accept=".csv" [maxFileSize]="1000000" label="Import" chooseLabel="Import" (onSelect)="uploadCSV($event)" class="ml-2 inline-block"></p-fileUpload>
+                    <button *ngIf="tableConfigs.showExport" pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help" (click)="dt.exportCSV()"></button>
                 </ng-template>
             </p-toolbar>
 
@@ -28,14 +29,14 @@
                 [rowsPerPageOptions]="[10, 20, 30]"
                 [showCurrentPageReport]="true"
                 currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-                [(selection)]="selectedProducts"
+                [(selection)]="selectedItems"
                 selectionMode="multiple"
                 [rowHover]="true"
                 dataKey="id"
             >
                 <ng-template pTemplate="caption">
                     <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                        <h5 class="m-0">Manage Suppliers</h5>
+                        <h5 class="m-0">{{tableConfigs.tableName}}</h5>
                         <span class="block mt-2 md:mt-0 p-input-icon-left">
                             <i class="pi pi-search"></i>
                             <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search..." class="w-full sm:w-auto" />
@@ -44,9 +45,9 @@
                 </ng-template>
                 <ng-template pTemplate="header">
                     <tr>
-                        <th style="width: 3rem">
+                        <!-- <th style="width: 3rem">
                             <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-                        </th>
+                        </th> -->
                         
                         <ng-container *ngFor="let column of columns">
                             <th *ngIf="column.isSortable else notSortableColumn" pSortableColumn="{{column.name}}">{{column.name}} <p-sortIcon field="{{column.name}}"></p-sortIcon></th>
@@ -59,20 +60,26 @@
                 </ng-template>
                 <ng-template pTemplate="body" let-row>
                     <tr>
-                        <td>
+                        <!-- <td>
                             <p-tableCheckbox [value]="row"></p-tableCheckbox>
-                        </td>
+                        </td> -->
                         <ng-container *ngFor="let column of columns">
-                            <td style="width: 14%; min-width: 10rem">
+                            <td *ngIf="column.name === 'Name'; else otherColumn" style="width: 14%; min-width: 10rem">
                                 <span class="p-column-title"></span>
-                                {{ row[column.prop] }}
+                                <a [routerLink]="['/supplier', row.id]">{{ row[column.prop] || 'N/A' }}</a>
                             </td>
+                            <ng-template #otherColumn>
+                                <td style="width: 14%; min-width: 10rem">
+                                    <span class="p-column-title"></span>
+                                    {{ row[column.prop] || 'N/A' }}
+                                </td>
+                            </ng-template>
                         </ng-container>
                         
                         <td>
                             <div class="flex">
-                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success ml-2" (click)="editProduct(row)"></button>
-                                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteProduct(row)"></button>
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded bg-primary-reverse ml-2" (click)="editItem(row)"></button>
+                                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded bg-primary-reverse" (click)="deleteItem(row)"></button>
                             </div>
                         </td>
                     </tr>
@@ -80,35 +87,16 @@
             </p-table>
         </div>
 
-        <p-dialog [(visible)]="productDialog" [style]="{ width: '450px' }" header="Create Supplier" [modal]="true" class="p-fluid">
-            <ng-template pTemplate="content">
-                <div [formGroup]="addSupplierForm" class="card p-fluid">
-                    <div class="field">
-                        <label htmlFor="Name">Name</label>
-                        <input pInputText formControlName="name" type="text" />
-                    </div>
-                    <div class="field">
-                        <label htmlFor="Email">Email</label>
-                        <input pInputText formControlName="email" type="text" />
-                    </div>
-                    <div class="field">
-                        <label htmlFor="Address">Address</label>
-                        <input pInputText formControlName="address" type="text" />
-                    </div>
-                    <div class="field">
-                        <label htmlFor="VAT Number">VAT Number</label>
-                        <input pInputText formControlName="vatNumber" type="text" />
-                    </div>
-                </div>
-            </ng-template>
-
+        <p-dialog [(visible)]="addItemDialog" [style]="{ width: '450px' }" header="Create {{tableConfigs.tableName}}" [modal]="true" class="p-fluid">
+            <!-- <ng-content select="{{addSupplierFormTemplate}}"></ng-content> -->
+            <ng-container *ngTemplateOutlet="formTemplate; context: { $implicit: selectedMutationType }"></ng-container>
             <ng-template pTemplate="footer">
                 <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
-                <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveProduct(selectedMutationType)"></button>
+                <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveItem(selectedMutationType)"></button>
             </ng-template>
         </p-dialog>
 
-        <p-dialog [(visible)]="deleteProductDialog" header="Confirm" [modal]="true" [style]="{ width: '450px' }">
+        <p-dialog [(visible)]="deleteItemDialog" header="Confirm" [modal]="true" [style]="{ width: '450px' }">
             <div class="flex align-items-center justify-content-center">
                 <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
                 <span *ngIf="dataItem"
@@ -117,18 +105,18 @@
                 >
             </div>
             <ng-template pTemplate="footer">
-                <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="deleteProductDialog = false"></button>
+                <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="deleteItemDialog = false"></button>
                 <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes" (click)="confirmDelete(dataItem)"></button>
             </ng-template>
         </p-dialog>
 
-        <p-dialog [(visible)]="deleteProductsDialog" header="Confirm" [modal]="true" [style]="{ width: '450px' }">
+        <p-dialog [(visible)]="deleteItemsDialog" header="Confirm" [modal]="true" [style]="{ width: '450px' }">
             <div class="flex align-items-center justify-content-center">
                 <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
                 <span>Are you sure you want to delete selected products?</span>
             </div>
             <ng-template pTemplate="footer">
-                <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="deleteProductsDialog = false"></button>
+                <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="deleteItemsDialog = false"></button>
                 <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes" (click)="confirmDeleteSelected()"></button>
             </ng-template>
         </p-dialog>

@@ -1,0 +1,42 @@
+<app-generic-table (changeEvent)="handleChangeEvent($event)" [formTemplate]="addSupplierFormTemplate" (formTemplateEvent)="handleFormTemplateEvent($event)" [forcedChangeVal]="forcedChangeVal" [tableConfigs]="tableConfigs">
+    <ng-template #addSupplierFormTemplate pTemplate="content">
+        <div [formGroup]="createOrUpdateForm" class="card p-fluid">
+            <div class="field">
+                <label htmlFor="Name">Name</label>
+                <input pInputText formControlName="name" type="text" />
+            </div>
+
+            <div class="field">
+                <label htmlFor="Population">Population</label>
+                <input pInputText formControlName="population" min="0" type="number" />
+            </div>
+
+            <div class="field">
+                <label htmlFor="Men">Men</label>
+                <input pInputText formControlName="men" min="0" type="number" />
+            </div>
+
+            <div class="field">
+                <label htmlFor="Women">Women</label>
+                <input pInputText formControlName="women" min="0" type="number" />
+            </div>
+
+            <div class="field">
+                <label htmlFor="Area">Area</label>
+                <input pInputText formControlName="area" min="0" type="number" />
+            </div>
+
+            <div class="field">
+                <label htmlFor="Socio Economy">Socio Economy</label>
+                <input pInputText formControlName="socio_economy" type="text" />
+            </div>
+
+            <div class="field">
+                <label htmlFor="License Holders">License Holders</label>
+                <input pInputText formControlName="license_holders" type="text" />
+            </div>
+        </div>
+    </ng-template>
+</app-generic-table>
+
+

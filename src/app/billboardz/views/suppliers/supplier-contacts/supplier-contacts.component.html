@@ -1,0 +1,29 @@
+<app-generic-table (changeEvent)="handleChangeEvent($event)" [formTemplate]="formTemplate" (formTemplateEvent)="handleFormTemplateEvent($event)" [forcedChangeVal]="forcedChangeVal" [tableConfigs]="tableConfigs">
+    <ng-template #formTemplate pTemplate="content">
+        <div [formGroup]="createOrUpdateForm" class="card p-fluid">
+            <div class="field">
+                <label htmlFor="Name">Name</label>
+                <input pInputText formControlName="name" type="text" />
+            </div>
+            <div class="field">
+                <label htmlFor="Role">Role</label>
+                <!-- <input pInputText formControlName="role" type="text" /> -->
+                <p-multiSelect [options]="roles" (onChange)="handleRoleChange($event)" placeholder="Select a Role" optionLabel="role" class="multiselect-custom" display="chip">
+                    <ng-template let-role pTemplate="item">
+                        <div class="flex align-items-center">
+                            <span class="ml-2">{{ role.role }}</span>
+                        </div>
+                    </ng-template>
+                </p-multiSelect>
+            </div>
+            <div class="field">
+                <label htmlFor="Email">Email</label>
+                <input pInputText formControlName="email" type="text" />
+            </div>
+            <div class="field">
+                <label htmlFor="Phone">Phone</label>
+                <input pInputText formControlName="phone" type="text" />
+            </div>
+        </div>
+    </ng-template>
+</app-generic-table>

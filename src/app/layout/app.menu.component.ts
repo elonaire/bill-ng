@@ -41,6 +41,22 @@ export class AppMenuComponent implements OnInit {
                         icon: 'pi pi-fw pi-briefcase',
                         routerLink: ['/billboards']
                     },
+                    {
+                        label: 'Billboard Types',
+                        icon: 'pi pi-fw pi-briefcase',
+                        routerLink: ['/billboards/types']
+                    },
+                ]
+            },
+            {
+                label: 'Cities',
+                icon: 'pi pi-building',
+                items: [
+                    {
+                        label: 'Cities',
+                        icon: 'pi pi-fw pi-building',
+                        routerLink: ['/cities']
+                    },
                 ]
             },
         ];
