@@ -14,6 +14,8 @@ src/assets/layout/css/*.css
 src/assets/sass/theme/designer
 src/assets/sass/theme/_vendor_extensions
 
+src/app/demo/
+
 # compiled output
 /dist
 /tmp
