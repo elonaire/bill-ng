@@ -1,7 +1,6 @@
 import {
   AfterContentInit,
   Component,
-  ContentChild,
   ElementRef,
   OnInit,
   ViewChild,
@@ -12,7 +11,6 @@ import {
   AppState,
   TableColumn,
   GenericTableConfigs,
-  Supplier,
 } from 'src/app/@types/billboardz';
 import { FormMutationInfo } from 'src/app/billboardz/components/crud/crud.component';
 import { ApiService } from 'src/app/billboardz/services/api.service';
@@ -113,6 +111,12 @@ export class BillboardsComponent implements OnInit, AfterContentInit {
     'image7',
     'image8',
   ];
+  formData: FormData = new FormData();
+  uploadEndpoint = 'http://localhost:3000/files/upload-bulk';
+  billboardStatuses = [
+    { label: 'Active', value: true },
+    { label: 'Inactive', value: false },
+  ];
 
   ngOnInit(): void {
     this.options = {
@@ -129,8 +133,8 @@ export class BillboardsComponent implements OnInit, AfterContentInit {
     this.addressForm = this.fb.group({
       longitude: [{ value: 0, disabled: true }, Validators.required],
       latitude: [{ value: 0, disabled: true }, Validators.required],
-      formattedAddress: ['', Validators.required],
-      neighborhood: ['', Validators.required],
+      formattedAddress: [{ value: '', disabled: true }, Validators.required],
+      neighborhood: [{ value: '', disabled: true }, Validators.required],
     });
     this.addBillboardForm = this.fb.group({
       address: [this.addressForm.value, Validators.required],
@@ -145,18 +149,11 @@ export class BillboardsComponent implements OnInit, AfterContentInit {
       side: ['', Validators.required],
       premiumDescription: ['', Validators.required],
       orientation: ['', Validators.required],
-      isActive: ['', Validators.required],
+      isActive: [false, Validators.required],
       price: ['', Validators.required],
       views: ['', Validators.required],
       rotation: ['', Validators.required],
-      image1: [''],
-      image2: [''],
-      image3: [''],
-      image4: [''],
-      image5: [''],
-      image6: [''],
-      image7: [''],
-      image8: [''],
+      images: [[]],
     });
 
     this.updateBillboardForm = this.fb.group({
@@ -173,18 +170,11 @@ export class BillboardsComponent implements OnInit, AfterContentInit {
       side: ['', Validators.required],
       premiumDescription: ['', Validators.required],
       orientation: ['', Validators.required],
-      isActive: ['', Validators.required],
+      isActive: [false, Validators.required],
       price: ['', Validators.required],
       views: ['', Validators.required],
       rotation: ['', Validators.required],
-      image1: [''],
-      image2: [''],
-      image3: [''],
-      image4: [''],
-      image5: [''],
-      image6: [''],
-      image7: [''],
-      image8: [''],
+      images: [[]],
     });
 
     this.createOrUpdateForm = this.addBillboardForm;
@@ -216,6 +206,11 @@ export class BillboardsComponent implements OnInit, AfterContentInit {
       longitude: event.latLng.lng(),
       latitude: event.latLng.lat(),
     });
+
+    console.log(
+      'this.addressForm.value',
+      this.addressForm.value
+    );
 
     this.overlays = [
       new google.maps.Marker({
@@ -258,10 +253,11 @@ export class BillboardsComponent implements OnInit, AfterContentInit {
     // this.selectedMutationType = event;
     if (event.mutationType === MutationType.CREATE) {
       this.createOrUpdateForm = this.addBillboardForm;
+      console.log('this.createOrUpdateForm', this.createOrUpdateForm.value);
     } else if (event.mutationType === MutationType.UPDATE) {
       this.createOrUpdateForm = this.updateBillboardForm;
       if (!this.createOrUpdateForm.valid) {
-        this.createOrUpdateForm.patchValue(event.data as Supplier);
+        this.createOrUpdateForm.patchValue(event.data as any);
       }
     } else if (event.mutationType === MutationType.DELETE) {
       this.store.dispatch(
@@ -295,6 +291,10 @@ export class BillboardsComponent implements OnInit, AfterContentInit {
       this.createOrUpdateForm.patchValue({
         [field]: event.value.name,
       });
+    } else if (field === 'isActive') {
+      this.createOrUpdateForm.patchValue({
+        [field]: event.value,
+      });
     } else {
       this.createOrUpdateForm.patchValue({
         [field]: event.value.id,
@@ -322,14 +322,47 @@ export class BillboardsComponent implements OnInit, AfterContentInit {
   handleFileSelect(event: any) {
     console.log('handleFileSelect', event);
     // this.uploadedFiles = event.currentFiles;
+    this.formData.set(
+      this.selectedImageToUpload,
+      event.currentFiles[0] as File
+    );
+    console.log('this.formData', this.formData);
+    this.selectedImageToUpload = '';
   }
 
-  onUpload(event: any) {
-    console.log('onUpload', event);
+  uploadFiles() {
+    console.log('onUpload');
   }
 
   handleSelectImageToUpload(event: any) {
     console.log('handleSelectImageToUpload', event);
-    this.selectedImageToUpload = event;
+    this.selectedImageToUpload = event.value;
+  }
+
+  uploadHandler(event: any) {
+    console.log('uploadHandler', event);
+
+    this.apiService.filesBulkUpload(this.formData).subscribe((res) => {
+      const files = (res as any[]).map((file) => {
+        const { originalname, filename, path, destination, fieldname, mimetype, encoding, size, _id } = file;
+        return {
+          originalname,
+          filename,
+          path,
+          destination,
+          fieldname,
+          mimetype,
+          size,
+          encoding,
+          _id,
+        };
+      });
+      
+      this.uploadedFiles = [...this.uploadedFiles, ...files];
+      this.createOrUpdateForm.patchValue({
+        images: files,
+      });
+      this.formData = new FormData();
+    });
   }
 }

@@ -270,6 +270,27 @@ export const CREATE_BILLBOARD = gql`
         id
         name
       }
+      width
+      height
+      subType
+      side
+      premiumDescription
+      orientation
+      isActive
+      price
+      views
+      rotation
+      images {
+        id: _id
+        fieldname
+        originalname
+        encoding
+        mimetype
+        destination
+        filename
+        path
+        size
+      }
     }
   }
 `;
@@ -295,6 +316,27 @@ export const UPDATE_BILLBOARD = gql`
       supplier {
         id
         name
+      }
+      width
+      height
+      subType
+      side
+      premiumDescription
+      orientation
+      isActive
+      price
+      views
+      rotation
+      images {
+        id: _id
+        fieldname
+        originalname
+        encoding
+        mimetype
+        destination
+        filename
+        path
+        size
       }
     }
   }
@@ -360,14 +402,17 @@ export const GET_BILLBOARDS = gql`
       price
       views
       rotation
-      image1
-      image2
-      image3
-      image4
-      image5
-      image6
-      image7
-      image8
+      images {
+        id: _id
+        fieldname
+        originalname
+        encoding
+        mimetype
+        destination
+        filename
+        path
+        size
+      }
     }
   }
 `;

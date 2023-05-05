@@ -35,7 +35,9 @@ export class ApiService {
   constructor(private apollo: Apollo, private httpLink: HttpLink, private http: HttpClient) {
     apollo.create({
       link: this.httpLink.create({ uri: 'http://localhost:3000/graphql' }),
-      cache: new InMemoryCache(),
+      cache: new InMemoryCache({
+        addTypename: false,
+      }),
     });
   }
 
@@ -244,6 +246,10 @@ export class ApiService {
   }
 
   uploadCSV(file: FormData) {
-    return this.http.post('http://localhost:3000/file-upload/upload', file);
+    return this.http.post('http://localhost:3000/files/upload', file);
+  }
+
+  filesBulkUpload(files: FormData) {
+    return this.http.post('http://localhost:3000/files/upload-bulk', files);
   }
 }

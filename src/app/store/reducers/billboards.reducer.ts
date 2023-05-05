@@ -2,6 +2,7 @@ import { createReducer, on, Action } from '@ngrx/store';
 import { BillboardzBillboardsState } from 'src/app/@types/billboardz';
 import {
   createBillboard,
+  createBillboardSuccess,
   createBillboardType,
   createBillboardTypeSuccess,
   deleteBillboardType,
@@ -77,7 +78,9 @@ const billboardsReducer = createReducer(
     };
   }),
   on(createBillboard, (state) => state),
-  on(createBillboardTypeSuccess, (state, { payload }) => {
+  on(createBillboardSuccess, (state, { payload }) => {
+    console.log('createBillboardTypeSuccess', payload.data['createBillboard']);
+    
     return {
       ...state,
       loading: false,
