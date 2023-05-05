@@ -5,12 +5,16 @@ import {
   createBillboardSuccess,
   createBillboardType,
   createBillboardTypeSuccess,
+  deleteBillboard,
+  deleteBillboardSuccess,
   deleteBillboardType,
   deleteBillboardTypeSuccess,
   loadBillboardTypes,
   loadBillboardTypesSuccess,
   loadBillboards,
   loadBillboardsSuccess,
+  updateBillboard,
+  updateBillboardSuccess,
   updateBillboardType,
   updateBillboardTypeSuccess,
 } from '../actions/billboards.actions';
@@ -79,7 +83,7 @@ const billboardsReducer = createReducer(
   }),
   on(createBillboard, (state) => state),
   on(createBillboardSuccess, (state, { payload }) => {
-    console.log('createBillboardTypeSuccess', payload.data['createBillboard']);
+    console.log('createBillboardSuccess', payload.data['createBillboard']);
     
     return {
       ...state,
@@ -87,8 +91,8 @@ const billboardsReducer = createReducer(
       billboards: [...state.billboards, payload.data['createBillboard']],
     };
   }),
-  on(updateBillboardType, (state) => state),
-  on(updateBillboardTypeSuccess, (state, { payload }) => {
+  on(updateBillboard, (state) => state),
+  on(updateBillboardSuccess, (state, { payload }) => {
     return {
       ...state,
       loading: false,
@@ -100,8 +104,8 @@ const billboardsReducer = createReducer(
       ],
     };
   }),
-  on(deleteBillboardType, (state) => state),
-  on(deleteBillboardTypeSuccess, (state, { payload }) => {
+  on(deleteBillboard, (state) => state),
+  on(deleteBillboardSuccess, (state, { payload }) => {
     return {
       ...state,
       loading: false,
