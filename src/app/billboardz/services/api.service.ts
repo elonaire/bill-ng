@@ -34,7 +34,7 @@ import { HttpClient } from '@angular/common/http';
 export class ApiService {
   constructor(private apollo: Apollo, private httpLink: HttpLink, private http: HttpClient) {
     apollo.create({
-      link: this.httpLink.create({ uri: 'http://billboards-api/graphql' }),
+      link: this.httpLink.create({ uri: '/billboards-api/graphql' }),
       cache: new InMemoryCache({
         addTypename: false,
       }),
@@ -246,10 +246,10 @@ export class ApiService {
   }
 
   uploadCSV(file: FormData) {
-    return this.http.post('http://billboards-api/files/upload', file);
+    return this.http.post('/billboards-api/files/upload', file);
   }
 
   filesBulkUpload(files: FormData) {
-    return this.http.post('http://billboards-api/files/upload-bulk', files);
+    return this.http.post('/billboards-api/files/upload-bulk', files);
   }
 }
