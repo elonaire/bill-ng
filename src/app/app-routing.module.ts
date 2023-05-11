@@ -6,14 +6,14 @@ const routerOptions: ExtraOptions = {
 };
 
 const routes: Routes = [
-//   {
-//     path: '',
-//     loadChildren: () =>
-//       import('./billboardz/layout/app.layout.module').then(
-//         (m) => m.AppLayoutModule
-//       ),
-//   },
-  { path: '', loadChildren: () => import('./billboardz/billboardz.module').then((m) => m.BillboardzModule) },
+  {
+    path: '',
+    loadChildren: () =>
+      import('./billboardz/components/login/login.module').then(
+        (m) => m.LoginModule
+      ),
+  },
+  { path: 'admin', loadChildren: () => import('./billboardz/billboardz.module').then((m) => m.BillboardzModule) },
 ];
 
 @NgModule({
