@@ -22,3 +22,5 @@ export const selectBillboards = (state: AppState) => {
 
     return modified;
 };
+
+export const selectUser = (state: AppState) => state.user;

@@ -16,7 +16,10 @@ export class CitiesEffects {
             type: '[Cities] Load Cities Success',
             payload: cities,
           })),
-          catchError(() => EMPTY)
+          catchError(async (error) => ({
+            type: '[Global] Error',
+            payload: error,
+          }))
         )
       )
     )

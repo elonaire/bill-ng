@@ -1,10 +1,12 @@
 import { createReducer, on, Action } from "@ngrx/store";
 import { BillboardzCitiesState } from "src/app/@types/billboardz";
 import { loadCities, loadCitiesSuccess } from "../actions/cities.actions";
+import { error } from "../actions/global.actions";
 
 export const INITIAL_STATE: BillboardzCitiesState = {
     cities: [],
     loading: false,
+    error: '',
 };
 
 const citiesReducer = createReducer(
@@ -18,6 +20,13 @@ const citiesReducer = createReducer(
         cities: payload.data['getCities'],
       };
     }),
+    on(error, (state, { payload }) => {
+      return {
+          ...state,
+          loading: false,
+          error: payload['message']
+      };
+    })
     );
   
   export function reducer(state: BillboardzCitiesState | undefined, action: Action) {

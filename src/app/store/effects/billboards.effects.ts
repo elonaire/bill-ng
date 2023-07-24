@@ -16,7 +16,10 @@ export class BillboardsEffects {
             type: '[Billboards] Load Billboard Types Success',
             payload: billboardTypes,
           })),
-          catchError(() => EMPTY)
+          catchError(async (error) => ({
+            type: '[Global] Error',
+            payload: error,
+          }))
         )
       )
     )
@@ -31,7 +34,10 @@ export class BillboardsEffects {
             type: '[Billboards] Load Billboards Success',
             payload: billboards,
           })),
-          catchError(() => EMPTY)
+          catchError(async (error) => ({
+            type: '[Global] Error',
+            payload: error,
+          }))
         )
       )
     )
@@ -46,7 +52,10 @@ export class BillboardsEffects {
             type: '[Billboards] Create Billboard Type Success',
             payload: billboardType,
           })),
-          catchError(() => EMPTY)
+          catchError(async (error) => ({
+            type: '[Global] Error',
+            payload: error,
+          }))
         )
       )
     )
@@ -61,7 +70,10 @@ export class BillboardsEffects {
             type: '[Billboards] Update Billboard Type Success',
             payload: billboardType,
           })),
-          catchError(() => EMPTY)
+          catchError(async (error) => ({
+            type: '[Global] Error',
+            payload: error,
+          }))
         )
       )
     )
@@ -76,7 +88,10 @@ export class BillboardsEffects {
             type: '[Billboards] Delete Billboard Type Success',
             payload: billboardType,
           })),
-          catchError(() => EMPTY)
+          catchError(async (error) => ({
+            type: '[Global] Error',
+            payload: error,
+          }))
         )
       )
     )
@@ -91,7 +106,10 @@ export class BillboardsEffects {
             type: '[Billboards] Create Billboard Success',
             payload: billboard,
           })),
-          catchError(() => EMPTY)
+          catchError(async (error) => ({
+            type: '[Global] Error',
+            payload: error,
+          }))
         )
       )
     )
@@ -106,7 +124,10 @@ export class BillboardsEffects {
             type: '[Billboards] Update Billboard Success',
             payload: billboard,
           })),
-          catchError(() => EMPTY)
+          catchError(async (error) => ({
+            type: '[Global] Error',
+            payload: error,
+          }))
         )
       )
     )
@@ -121,7 +142,10 @@ export class BillboardsEffects {
             type: '[Billboards] Delete Billboard Success',
             payload: billboard,
           })),
-          catchError(() => EMPTY)
+          catchError(async (error) => ({
+            type: '[Global] Error',
+            payload: error,
+          }))
         )
       )
     )

@@ -39,12 +39,12 @@ export class AppMenuComponent implements OnInit {
                     {
                         label: 'Billboards',
                         icon: 'pi pi-fw pi-briefcase',
-                        routerLink: ['/billboards']
+                        routerLink: ['/admin/billboards']
                     },
                     {
                         label: 'Billboard Types',
                         icon: 'pi pi-fw pi-briefcase',
-                        routerLink: ['/billboards/types']
+                        routerLink: ['/admin/billboards/types']
                     },
                 ]
             },
@@ -55,7 +55,7 @@ export class AppMenuComponent implements OnInit {
                     {
                         label: 'Cities',
                         icon: 'pi pi-fw pi-building',
-                        routerLink: ['/cities']
+                        routerLink: ['/admin/cities']
                     },
                 ]
             },

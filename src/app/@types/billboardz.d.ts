@@ -44,6 +44,7 @@ export type BillboardzSuppliersState = {
   suppliers: Supplier[];
   loading: boolean;
   supplierContacts: any[];
+  error: string;
 };
 
 export type ActionPayloadResponse = {
@@ -56,11 +57,20 @@ export type BillboardzBillboardsState = {
   billboards: any[];
   loading: boolean;
   billboardTypes: any[];
+  error: string;
 };
 
 export type BillboardzCitiesState = {
   cities: any[];
   loading: boolean;
+  error: string;
+};
+
+export type BillboardzUserState = {
+  user: any;
+  loading: boolean;
+  token: string;
+  error: string;
 };
 
 export enum StoreSelectors {
@@ -75,4 +85,5 @@ export type AppState = {
   suppliers: BillboardzSuppliersState;
   billboards: BillboardzBillboardsState;
   cities: BillboardzCitiesState;
+  user: BillboardzUserState;
 };

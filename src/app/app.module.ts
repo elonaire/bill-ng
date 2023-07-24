@@ -13,6 +13,12 @@ import *  as fromBillboards from './store/reducers/billboards.reducer';
 import * as fromCities from './store/reducers/cities.reducer';
 import { BillboardsEffects } from './store/effects/billboards.effects';
 import { CitiesEffects } from './store/effects/cities.effects';
+import * as fromUsers from './store/reducers/user.reducer';
+import { UserEffects } from './store/effects/user.effects';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HeadersInterceptor } from './headers.interceptor';
 
 @NgModule({
   declarations: [AppComponent],
@@ -20,16 +26,24 @@ import { CitiesEffects } from './store/effects/cities.effects';
     AppRoutingModule,
     AppLayoutModule,
     ApolloModule,
-    StoreModule.forRoot({ suppliers: fromSuppliers.reducer, billboards: fromBillboards.reducer, cities: fromCities.reducer }),
+    StoreModule.forRoot({ suppliers: fromSuppliers.reducer, billboards: fromBillboards.reducer, cities: fromCities.reducer, user: fromUsers.reducer }),
     EffectsModule.forRoot([
         SuppliersEffects,
         CitiesEffects,
-        BillboardsEffects
+        BillboardsEffects,
+        UserEffects,
     ]),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
+    ToastModule,
   ],
   providers: [
     // { provide: LocationStrategy, useClass: HashLocationStrategy }
+    MessageService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HeadersInterceptor,
+      multi: true,
+    },
   ],
   bootstrap: [AppComponent],
 })

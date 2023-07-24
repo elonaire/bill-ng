@@ -18,11 +18,13 @@ import {
   updateSupplierContactSuccess,
   updateSupplierSuccess,
 } from '../actions/suppliers.actions';
+import { error } from '../actions/global.actions';
 
 export const INITIAL_STATE: BillboardzSuppliersState = {
   suppliers: [],
   loading: false,
   supplierContacts: [],
+  error: '',
 };
 
 const suppliersReducer = createReducer(
@@ -114,7 +116,14 @@ const suppliersReducer = createReducer(
         (supplierContact) => supplierContact.id !== payload.data['deleteSupplierContact'].id
       ),
     };
-  })
+  }),
+  on(error, (state, { payload }) => {
+    return {
+        ...state,
+        loading: false,
+        error: payload['message']
+    };
+})
 );
 
 export function reducer(

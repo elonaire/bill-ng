@@ -18,11 +18,13 @@ import {
   updateBillboardType,
   updateBillboardTypeSuccess,
 } from '../actions/billboards.actions';
+import { error } from '../actions/global.actions';
 
 export const INITIAL_STATE: BillboardzBillboardsState = {
   billboards: [],
   loading: false,
   billboardTypes: [],
+  error: '',
 };
 
 const billboardsReducer = createReducer(
@@ -115,7 +117,14 @@ const billboardsReducer = createReducer(
         ),
       ],
     };
-  })
+  }),
+  on(error, (state, { payload }) => {
+    return {
+        ...state,
+        loading: false,
+        error: payload['message']
+    };
+})
 );
 
 export function reducer(

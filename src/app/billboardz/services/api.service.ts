@@ -25,8 +25,12 @@ import {
   CREATE_BILLBOARD,
   DELETE_BILLBOARD,
   UPDATE_BILLBOARD,
+  LOGIN,
 } from './graphql.ops';
 import { HttpClient } from '@angular/common/http';
+
+const dev = true;
+const apiUrl = dev ? 'http://localhost:3000' : '/billboards-api';
 
 @Injectable({
   providedIn: 'root',
@@ -34,7 +38,7 @@ import { HttpClient } from '@angular/common/http';
 export class ApiService {
   constructor(private apollo: Apollo, private httpLink: HttpLink, private http: HttpClient) {
     apollo.create({
-      link: this.httpLink.create({ uri: '/billboards-api/graphql' }),
+      link: this.httpLink.create({ uri: `${apiUrl}/graphql` }),
       cache: new InMemoryCache({
         addTypename: false,
       }),
@@ -246,10 +250,20 @@ export class ApiService {
   }
 
   uploadCSV(file: FormData) {
-    return this.http.post('/billboards-api/files/upload', file);
+    return this.http.post(`${apiUrl}/files/upload`, file);
   }
 
   filesBulkUpload(files: FormData) {
-    return this.http.post('/billboards-api/files/upload-bulk', files);
+    return this.http.post(`${apiUrl}/files/upload-bulk`, files);
+  }
+
+  login(username: string, password: string) {
+    return this.apollo.mutate({
+      mutation: LOGIN,
+      variables: {
+        username,
+        password,
+      },
+    });
   }
 }
