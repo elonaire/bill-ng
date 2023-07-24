@@ -205,7 +205,7 @@ export class ApiService {
   /* Google Maps */
   getCitiesWithinRadius(radius: number, lat: number, lng: number) {
     return this.http.get(
-      `https://maps.googleapis.com/maps/api/place/nearbysearch/json?type=locality&location=${lat},${lng}&key=AIzaSyBi2bAqDJmx3gLWUyB3M7UwShJurO4hEDs&radius=${radius}`
+      `https://maps.googleapis.com/maps/api/place/nearbysearch/json?type=locality&location=${lat},${lng}&key=AIzaSyJmxDUMMY_KEY7UwShJurO4hEDs&radius=${radius}`
     );
   }
 
@@ -245,7 +245,7 @@ export class ApiService {
 
   getSelectedPlaceDetails(placeId: string) {
     return this.http.get(
-      `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=adr_address,address_components,formatted_address,vicinity&key=AIzaSyBi2bAqDJmx3gLWUyB3M7UwShJurO4hEDs`
+      `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=adr_address,address_components,formatted_address,vicinity&key=AIzaSyJmxDUMMY_KEY7UwShJurO4hEDs`
     );
   }
 
